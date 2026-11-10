@@ -1,0 +1,1913 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2D2E29">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="پایتون دری">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%232D2E29'/%3E%3Ccircle cx='50' cy='50' r='30' fill='%23FFD54F'/%3E%3Cpath d='M42 34l24 16-24 16z' fill='%233B2A00'/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%232D2E29'/%3E%3Ccircle cx='50' cy='50' r='30' fill='%23FFD54F'/%3E%3Cpath d='M42 34l24 16-24 16z' fill='%233B2A00'/%3E%3C/svg%3E">
+<title>پایتون دری</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: a phone code editor. Navy top bar, tab strip with a yellow underline, a huge editor where each line takes its own direction (English left, Persian right), a symbol row above the keyboard, and a yellow run button at the bottom right. */
+:root {
+  --bar: #16283D; --barfg: #F1F4F8; --tabs: #112034; --tabfg: #93A4BA; --line: #2B3F59;
+  --bg: #2D2E29; --gut: #353630; --gutfg: #8D8F84; --fg: #EEEEE8; --muted: #A0A99F;
+  --yellow: #FFD54F; --yellow-hover: #FFC21A; --on-yellow: #3B2A00;
+  --kw: #C792EA; --bi: #82AAFF; --str: #C3E88D; --cmt: #8A9494; --num: #F9A06E;
+  --panel: #1B2535; --panelfg: #EAEEF4; --field: #121B29; --chip: #243349;
+  --out-bg: #FFFFFF; --out-fg: #111418; --out-muted: #5E6775; --err: #C62828; --err-bg: #FDECEA;
+  --bad: #FF6B6B; --sel: rgba(130, 170, 255, .35); --backdrop: rgba(5, 10, 18, .6); --accent: #82AAFF;
+  --ui: "Vazirmatn", Tahoma, "Segoe UI", sans-serif;
+  --mono: "JetBrains Mono", "Vazirmatn", Consolas, "DejaVu Sans Mono", monospace;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) {
+    --bar: #DDE6F1; --barfg: #14243A; --tabs: #EAF0F7; --tabfg: #55667E; --line: #C5D1E0;
+    --bg: #FBFBF8; --gut: #F0F0EA; --gutfg: #8A8D84; --fg: #1B1F27; --muted: #5E6775;
+    --yellow-hover: #F5B800;
+    --kw: #7C3AED; --bi: #0969DA; --str: #0A7F3F; --cmt: #7C8794; --num: #B45309;
+    --panel: #FFFFFF; --panelfg: #1B1F27; --field: #F3F5F8; --chip: #E6ECF4;
+    --bad: #C62828; --sel: rgba(37, 99, 235, .22); --backdrop: rgba(16, 20, 28, .45); --accent: #2563EB;
+    color-scheme: light;
+  }
+}
+:root[data-theme="light"] {
+  --bar: #DDE6F1; --barfg: #14243A; --tabs: #EAF0F7; --tabfg: #55667E; --line: #C5D1E0;
+  --bg: #FBFBF8; --gut: #F0F0EA; --gutfg: #8A8D84; --fg: #1B1F27; --muted: #5E6775;
+  --yellow-hover: #F5B800;
+  --kw: #7C3AED; --bi: #0969DA; --str: #0A7F3F; --cmt: #7C8794; --num: #B45309;
+  --panel: #FFFFFF; --panelfg: #1B1F27; --field: #F3F5F8; --chip: #E6ECF4;
+  --bad: #C62828; --sel: rgba(37, 99, 235, .22); --backdrop: rgba(16, 20, 28, .45); --accent: #2563EB;
+  color-scheme: light;
+}
+[hidden] { display: none !important; }
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body { margin: 0; background: var(--bar); color: var(--fg); font-family: var(--ui); font-size: 14px; line-height: 1.6; overflow: hidden; }
+button { font: inherit; color: inherit; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.app { height: 100%; display: flex; flex-direction: column; direction: ltr; --gx: max(16px, env(safe-area-inset-left, 0px)); --gy: max(16px, env(safe-area-inset-right, 0px)); }
+
+/* top bar */
+.bar { flex: none; display: flex; align-items: center; gap: 2px; background: var(--bar); color: var(--barfg); padding: 6px var(--gy) 6px var(--gx); min-height: 56px; }
+.ib { background: none; border: 0; width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; color: var(--barfg); }
+.ib:hover, .ib:active { background: rgba(127, 150, 180, .22); }
+.ib svg { width: 24px; height: 24px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.ttl { flex: 1; min-width: 0; padding: 0 10px; font-size: 20px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* tabs */
+.tabs { flex: none; display: flex; overflow-x: auto; background: var(--tabs); scrollbar-width: none; padding-left: var(--gx); padding-right: var(--gy); }
+.tabs::-webkit-scrollbar { display: none; }
+.tab { flex: none; display: flex; align-items: center; gap: 4px; padding: 0 14px; height: 46px; border-bottom: 3px solid transparent; color: var(--tabfg); font-size: 17px; font-weight: 600; background: none; border-top: 0; border-left: 0; border-right: 0; max-width: 220px; }
+.tab.on { color: var(--barfg); border-bottom-color: var(--yellow); }
+.tab .nm { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; direction: ltr; }
+.tab .x { margin-left: 2px; width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; font-size: 17px; line-height: 1; opacity: .7; }
+.tab .x:hover { background: rgba(127, 150, 180, .25); opacity: 1; }
+.tab input { width: 130px; font: inherit; border: 1px solid var(--accent); border-radius: 6px; background: var(--field); color: var(--panelfg); padding: 1px 6px; direction: ltr; }
+.tab.add { font-size: 24px; padding: 0 16px; }
+
+/* editor */
+.edwrap { position: relative; flex: 1; min-height: 0; background: var(--bg); }
+.scroll { position: absolute; inset: 0; overflow: auto; overscroll-behavior: contain; }
+.inner { display: flex; flex-direction: row-reverse; min-height: 100%; }
+.inner.left { flex-direction: row; }
+.inner.off .gut { display: none; }
+.gut { flex: none; min-width: calc(var(--d, 2) * 1ch + 30px); padding: 14px 0 140px; background: var(--gut); color: var(--gutfg); text-align: center; font-family: var(--mono); font-size: calc(var(--fs, 20px) * .8); user-select: none; font-variant-numeric: tabular-nums; }
+.gut .g { line-height: calc(var(--fs, 20px) * 1.7); overflow: hidden; }
+.gut .g.bad { color: var(--bad); font-weight: 600; }
+.code { position: relative; flex: 1; min-width: 0; }
+.hl, .code textarea { display: block; width: 100%; margin: 0; padding: 14px var(--gx) 140px; border: 0; font-family: var(--mono); font-size: var(--fs, 20px); line-height: 1.7; letter-spacing: 0; white-space: pre-wrap; overflow-wrap: break-word; word-break: normal; tab-size: 4; direction: ltr; text-align: start; unicode-bidi: plaintext; }
+.code .hl { color: var(--fg); pointer-events: none; }
+.code .hl .l { unicode-bidi: plaintext; text-align: start; }
+.code .hl .l.bad { background: rgba(255, 107, 107, .16); }
+.code textarea { position: absolute; inset: 0; height: 100%; resize: none; overflow: hidden; background: transparent; color: transparent; caret-color: var(--fg); outline: none; }
+.code textarea::selection { background: var(--sel); color: transparent; }
+.inner.ltr .hl .l, .inner.ltr .code textarea { unicode-bidi: normal; text-align: left; }
+.code i { font-style: normal; }
+.code .k { color: var(--kw); font-weight: 600; } .code .b { color: var(--bi); } .code .s { color: var(--str); } .code .c { color: var(--cmt); } .code .n { color: var(--num); }
+.fab { position: absolute; right: max(16px, env(safe-area-inset-right, 0px)); bottom: 16px; width: 62px; height: 62px; border-radius: 50%; border: 0; background: var(--yellow); color: var(--on-yellow); display: grid; place-items: center; box-shadow: 0 4px 14px rgba(0, 0, 0, .35); z-index: 5; transition: background .15s, transform .1s; }
+.fab:hover { background: var(--yellow-hover); }
+.fab:active { transform: scale(.94); }
+.fab svg { width: 30px; height: 30px; margin-left: 3px; }
+.pos { position: absolute; left: var(--gx); bottom: 8px; z-index: 4; font-size: 12px; color: var(--muted); background: var(--bg); padding: 0 8px; border-radius: 8px; opacity: .9; pointer-events: none; }
+
+/* symbol row */
+.keys { flex: none; display: flex; overflow-x: auto; background: var(--bar); border-top: 1px solid var(--line); scrollbar-width: none; padding-left: var(--gx); padding-right: var(--gy); }
+.keys::-webkit-scrollbar { display: none; }
+.keys button { flex: 1 0 auto; min-width: 46px; height: 46px; background: none; border: 0; border-right: 1px solid var(--line); color: var(--barfg); font-family: var(--mono); font-size: 22px; }
+.keys button:last-child { border-right: 0; }
+.keys button:active { background: var(--chip); }
+
+/* menu */
+.more { position: absolute; top: 52px; right: var(--gy); z-index: 30; min-width: 190px; background: var(--panel); color: var(--panelfg); border: 1px solid var(--line); border-radius: 12px; padding: 6px; box-shadow: 0 10px 30px rgba(0, 0, 0, .4); direction: rtl; }
+.more button { display: block; width: 100%; text-align: right; background: none; border: 0; padding: 10px 12px; border-radius: 8px; font-size: 15px; }
+.more button:hover, .more button:active { background: var(--chip); }
+
+/* sheets */
+.sheet { position: fixed; inset: 0; z-index: 20; background: var(--backdrop); display: flex; align-items: flex-end; justify-content: center; padding-top: max(24px, env(safe-area-inset-top, 0px)); }
+.win { width: min(760px, 100%); max-height: 100%; display: flex; flex-direction: column; background: var(--panel); color: var(--panelfg); border: 1px solid var(--line); border-bottom: 0; border-radius: 18px 18px 0 0; overflow: hidden; direction: rtl; padding-bottom: env(safe-area-inset-bottom, 0px); }
+.win.out { background: var(--out-bg); color: var(--out-fg); height: min(680px, 100%); border-color: transparent; }
+.win header { display: flex; align-items: center; gap: 8px; padding: 12px max(16px, env(safe-area-inset-right, 0px)) 12px max(16px, env(safe-area-inset-left, 0px)); border-bottom: 1px solid var(--line); flex: none; }
+.win.out header { border-bottom-color: #E4E7EC; }
+.win header strong { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 16px; }
+.win header .state { color: var(--out-muted); font-size: 12px; }
+.btn { border: 1px solid var(--line); background: var(--chip); color: inherit; border-radius: 10px; padding: 6px 14px; }
+.win.out .btn { background: #F3F5F8; border-color: #D9DDE3; color: var(--out-fg); }
+.btn:hover { filter: brightness(1.08); }
+.btn.primary { background: var(--yellow); border-color: var(--yellow); color: var(--on-yellow); font-weight: 600; }
+.btn.danger { color: var(--bad); }
+.out-body { flex: 1; min-height: 80px; overflow: auto; padding: 12px max(16px, env(safe-area-inset-right, 0px)) 12px max(16px, env(safe-area-inset-left, 0px)); font-family: var(--mono); font-size: 16px; line-height: 1.75; }
+.out-body .ln { white-space: pre-wrap; overflow-wrap: anywhere; min-height: 1.75em; unicode-bidi: plaintext; text-align: start; }
+.out-body .echo, .out-body .info { color: var(--out-muted); }
+.gui { flex: none; max-height: 50%; overflow: auto; padding: 12px max(16px, env(safe-area-inset-right, 0px)) 4px max(16px, env(safe-area-inset-left, 0px)); border-bottom: 1px solid #E4E7EC; font-family: var(--ui); }
+.gui .grow { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 10px; }
+.gui .gl { font-size: 16px; }
+.gui input[type="text"], .gui textarea { font: inherit; font-size: 16px; border: 1px solid #D9DDE3; border-radius: 10px; padding: 7px 10px; background: #fff; color: var(--out-fg); min-width: 0; max-width: 100%; }
+.gui textarea { width: 100%; min-height: 90px; font-family: var(--mono); }
+.gui label { display: inline-flex; align-items: center; gap: 6px; font-size: 16px; }
+.gfx { flex: none; max-height: 62%; overflow: auto; border-bottom: 1px solid #E4E7EC; background: #fff; direction: ltr; text-align: center; }
+.libhead { display: flex; flex-wrap: wrap; gap: 6px; }
+.libhead button { border: 1px solid var(--line); background: var(--chip); border-radius: 999px; padding: 4px 14px; }
+.libhead button.on { background: var(--yellow); border-color: var(--yellow); color: var(--on-yellow); font-weight: 600; }
+.lib .act { grid-column: 1 / -1; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: flex-start; direction: rtl; }
+.lib .act .btn { padding: 2px 12px; font-size: 13px; }
+.lib { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: 6px 10px; align-items: center; padding: 8px 12px; border-bottom: 1px solid var(--line); }
+.lib:last-child { border-bottom: 0; }
+.lib .en { font-family: var(--mono); direction: ltr; text-align: left; overflow-wrap: anywhere; }
+.gd details { border: 1px solid var(--line); border-radius: 12px; margin-bottom: 8px; background: var(--field); }
+.gd summary { padding: 11px 14px; font-weight: 600; cursor: pointer; }
+.gd .gb { padding: 2px 14px 12px; line-height: 1.9; font-size: 14.5px; }
+.gd .gb p { margin: 6px 0; }
+.gd pre { direction: ltr; unicode-bidi: plaintext; text-align: start; background: var(--bg); color: var(--fg); border-radius: 10px; padding: 10px 12px; overflow-x: auto; font-family: var(--mono); font-size: 13px; line-height: 1.7; white-space: pre; margin: 8px 0 4px; }
+.gd .chips { display: flex; flex-wrap: wrap; gap: 5px; margin: 6px 0; }
+.gd .chip { background: var(--chip); border-radius: 8px; padding: 2px 9px; font-size: 13px; }
+.gd .chip b { font-family: var(--mono); font-weight: 500; color: var(--accent); direction: ltr; unicode-bidi: isolate; margin-inline-start: 6px; }
+.gd .cnt { display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; margin: 8px 0; }
+.gd .cnt span:nth-child(even) { font-weight: 700; color: var(--accent); }
+.gd .btn { margin-bottom: 6px; }
+.lib .fa { overflow-wrap: break-word; text-align: right; direction: rtl; }
+.lib .why { grid-column: 1 / -1; color: var(--muted); font-size: 12.5px; direction: rtl; text-align: right; line-height: 1.7; }
+.badge { font-size: 12px; padding: 2px 10px; border-radius: 999px; white-space: nowrap; }
+.badge.yes { background: rgba(46, 160, 90, .2); color: #2EA05A; }
+.badge.no { background: rgba(198, 40, 40, .16); color: var(--bad); }
+.badge.unk { background: var(--chip); color: var(--muted); }
+.badge.sp { background: var(--yellow); color: var(--on-yellow); }
+.errbox { margin: 10px 0; background: var(--err-bg); border: 1px solid #F3B8B2; border-radius: 12px; padding: 12px 14px; font-family: var(--ui); direction: rtl; }
+.errbox strong { color: var(--err); display: block; font-size: 16px; }
+.errbox p { margin: 4px 0 0; color: #3A1B18; }
+.errbox small { display: block; margin-top: 8px; color: var(--out-muted); direction: ltr; text-align: left; font-family: var(--mono); font-size: 12px; overflow-wrap: anywhere; }
+.errbox .btn { margin-top: 10px; }
+.in-form { display: flex; gap: 8px; padding: 10px max(16px, env(safe-area-inset-right, 0px)) 10px max(16px, env(safe-area-inset-left, 0px)); border-top: 1px solid #E4E7EC; flex: none; }
+.in-form input { flex: 1; min-width: 0; font: inherit; font-family: var(--mono); font-size: 16px; border: 1px solid #D9DDE3; border-radius: 10px; padding: 8px 12px; background: #fff; color: var(--out-fg); }
+
+.tabsrow { display: flex; gap: 4px; padding: 6px 12px 0; border-bottom: 1px solid var(--line); flex: none; overflow-x: auto; }
+.tabsrow button { background: none; border: 0; border-bottom: 3px solid transparent; padding: 8px 12px; color: var(--muted); white-space: nowrap; font-size: 15px; }
+.tabsrow button.on { color: var(--panelfg); border-bottom-color: var(--yellow); font-weight: 600; }
+.pane { padding: 14px max(16px, env(safe-area-inset-right, 0px)) 18px max(16px, env(safe-area-inset-left, 0px)); overflow: auto; flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 12px; }
+.pane > * { flex: none; }
+.row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.row label { min-width: 140px; }
+.row input[type="range"] { flex: 1; min-width: 120px; accent-color: var(--yellow-hover); }
+.row input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--yellow-hover); }
+select, .pane input[type="search"] { font: inherit; border: 1px solid var(--line); border-radius: 10px; padding: 7px 10px; background: var(--field); color: var(--panelfg); }
+.note { color: var(--muted); font-size: 13px; margin: 0; }
+.list { display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+.item { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+.item:last-child { border-bottom: 0; }
+.item .t { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+.item .t.mono { font-family: var(--mono); direction: ltr; text-align: left; }
+.mods { display: flex; flex-wrap: wrap; gap: 6px; }
+.mods span { font-family: var(--mono); font-size: 13px; background: var(--chip); border-radius: 8px; padding: 2px 10px; direction: ltr; }
+.toast { position: fixed; left: 50%; bottom: max(90px, env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); background: var(--panelfg); color: var(--panel); padding: 6px 16px; border-radius: 999px; font-size: 13px; z-index: 40; }
+@media (prefers-reduced-motion: reduce) { .fab { transition: none; } }
+</style>
+
+<div class="app" id="app">
+  <header class="bar">
+    <button class="ib" id="bMenu" aria-label="تنظیمات"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+    <div class="ttl" id="ttl">hello.py</div>
+    <button class="ib" id="bFiles" aria-label="فایل‌ها"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></button>
+    <button class="ib" id="bLearn" aria-label="آموزش"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2V16h5v-.1c0-.8.4-1.5 1-2A6 6 0 0 0 12 3z"/></svg></button>
+    <button class="ib" id="bMore" aria-label="بیشتر" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5" r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="12" cy="19" r="1.2"/></svg></button>
+  </header>
+  <nav class="tabs" id="tabs" role="tablist" aria-label="فایل‌های باز"></nav>
+  <main class="edwrap">
+    <div class="scroll" id="scroll">
+      <div class="inner" id="inner">
+        <div class="gut" id="gut" aria-hidden="true"></div>
+        <div class="code">
+          <div class="hl" id="hl" aria-hidden="true"></div>
+          <textarea id="ta" spellcheck="false" autocapitalize="off" autocomplete="off" autocorrect="off" aria-label="ویرایشگر کد"></textarea>
+        </div>
+      </div>
+    </div>
+    <span class="pos" id="stPos">خط ۱ ستون ۱</span>
+    <button class="fab" id="bRun" aria-label="اجرا" title="اجرا (Ctrl+Enter)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l13-7.5z" fill="currentColor"/></svg></button>
+  </main>
+  <div class="keys" id="keys" aria-label="نمادها"></div>
+  <div class="more" id="more" hidden>
+    <button data-a="new">فایل جدید</button>
+    <button data-a="rename">تغییر نام این فایل</button>
+    <button data-a="copy">کپی کد</button>
+    <button data-a="libs">کتابخانه‌ها</button>
+    <button data-a="close">بستن این فایل</button>
+    <button data-a="settings">تنظیمات</button>
+  </div>
+</div>
+
+<div class="sheet" id="outSheet" hidden>
+  <section class="win out" aria-label="خروجی">
+    <header><strong id="outTitle">خروجی</strong><span class="state" id="outState"></span><button class="btn" id="outStop" hidden>توقف</button><button class="btn" id="outClose">بستن</button></header>
+    <div class="gui" id="gui" hidden></div>
+    <div class="gfx" id="gfx" hidden></div>
+    <div class="gfx" id="game" hidden></div>
+    <div class="out-body" id="outBody"></div>
+    <form class="in-form" id="inForm" hidden><input id="inField" placeholder="ورودی برنامه را بنویسید و Enter بزنید" autocomplete="off"><button class="btn primary" type="submit">ارسال</button></form>
+  </section>
+</div>
+
+<div class="sheet" id="setSheet" hidden>
+  <section class="win" style="height:min(620px,100%)" aria-label="تنظیمات">
+    <header><strong>تنظیمات</strong><button class="btn" id="setClose">بستن</button></header>
+    <div class="tabsrow" id="setTabs">
+      <button data-p="general" class="on">عمومی</button><button data-p="files">فایل‌ها</button><button data-p="guide">راهنما</button><button data-p="tutorial">آموزش</button><button data-p="libs">کتابخانه‌ها</button>
+    </div>
+    <div class="pane" id="paneGeneral">
+      <div class="row"><label for="fsRange">اندازه‌ی نوشته</label><input type="range" id="fsRange" min="12" max="36" step="1"><span id="fsVal"></span></div>
+      <div class="row"><label for="numsSel">شماره‌ی خط‌ها</label><select id="numsSel"><option value="right">سمت راست</option><option value="left">سمت چپ</option><option value="off">نمایش داده نشود</option></select></div>
+      <div class="row"><label for="dirSel">جهت خط‌ها</label><select id="dirSel"><option value="auto">خودکار (فارسی راست، انگلیسی چپ)</option><option value="ltr">همیشه از چپ</option></select></div>
+      <div class="row"><label for="persianChk">کلمه‌های فارسی</label><input type="checkbox" id="persianChk"><span class="note">اگر، برای، تعریف، چاپ، ورودی ...</span></div>
+      <p class="note">جهت هر خط خودکار است. خط انگلیسی از چپ و خط فارسی از راست نوشته می‌شود. فایل‌ها و تنظیمات فقط در حافظه‌ی همین مرورگر می‌مانند.</p>
+      <div class="row"><button class="btn danger" id="resetBtn">پاک‌کردن همه‌چیز و شروع از اول</button></div>
+    </div>
+    <div class="pane" id="paneFiles" hidden>
+      <p class="note">هر تغییر خودکار ذخیره می‌شود. فایل ‎.py‎ را در برنامه‌ی دیگر با <code>وارد نام_فایل</code> می‌توانید بیاورید.</p>
+      <div class="list" id="fileList"></div>
+    </div>
+    <div class="pane" id="paneGuide" hidden>
+      <div class="gd" id="guideBox"></div>
+    </div>
+    <div class="pane" id="paneTutorial" hidden>
+      <p class="note">درس‌ها را باز کنید و با دکمه‌ی زرد اجرا کنید. درس ۰ توضیح می‌دهد این برنامه چطور کار می‌کند و چه کارهایی را نمی‌کند.</p>
+      <div class="list" id="lessonList"></div>
+    </div>
+    <div class="pane" id="paneLibs" hidden>
+      <p class="note" id="stEngine">موتور پایتون: در حال بارگذاری…</p>
+      <div class="row"><label for="projSel">پروژه</label><select id="projSel"></select><button class="btn" id="projNew" type="button">پروژه‌ی جدید</button></div>
+      <div class="row" id="projForm" hidden><input type="search" id="projName" placeholder="نام پروژه" aria-label="نام پروژه"><button class="btn primary" id="projMake" type="button">ساخت</button></div>
+      <p class="note" id="libInfo"></p>
+      <input type="search" id="libSearch" placeholder="جستجو با نام فارسی یا انگلیسی" aria-label="جستجوی کتابخانه">
+      <div class="libhead" id="libFilters"><button data-f="all" class="on">همه</button><button data-f="yes">نصب‌شده</button><button data-f="no">نصب‌نشده</button></div>
+      <div class="list" id="libMods"></div>
+      <p class="note">هیچ کتابخانه‌ای از قبل نصب نیست. هر پروژه فهرست نصب‌های خودش را دارد. وقتی برنامه کتابخانه‌ی نصب‌نشده‌ای بخواهد، اجرا می‌ایستد و با یک دکمه نصبش می‌کنید. این موتور پایتون فقط کتابخانه‌هایی را دارد که در فهرست دکمه‌ی «نصب» دارند. «در مرورگر نیست» یعنی آن کتابخانه (مثل کیوی، نامپای، تیکنتر) در مرورگر اجرا نمی‌شود و pip هم ندارد. برای ساخت برنامه‌ی پنجره‌ای از «رابط» و برای بازی از «بازی» استفاده کنید.</p>
+    </div>
+  </section>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  var $ = function (id) { return document.getElementById(id); };
+  var store = {
+    get: function (k, d) { try { var v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } },
+    set: function (k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} },
+    clear: function () { try { ["pf-settings", "pf-files", "pf-tabs", "pf-active", "pf-projects", "pf-project"].forEach(function (k) { localStorage.removeItem(k); }); } catch (e) {} }
+  };
+
+  /* ======================= کلمه‌های فارسی ======================= */
+  var KW = {"اگر": "if", "وگر": "elif", "وگرنه": "else", "برای": "for", "در": "in", "مادام": "while", "تعریف": "def", "برگردان": "return", "کلاس": "class", "درست": "True", "نادرست": "False", "هیچ": "None", "و": "and", "یا": "or", "نه": "not", "است": "is", "وارد": "import", "از": "from", "به_عنوان": "as", "امتحان": "try", "خطا": "except", "سرانجام": "finally", "بشکن": "break", "ادامه": "continue", "بگذر": "pass", "با": "with", "بالابر": "raise", "سراسری": "global", "غیرمحلی": "nonlocal", "تولید": "yield", "لامبدا": "lambda", "حذف": "del", "ادعا": "assert", "ناهمگام": "async", "منتظر": "await", "تطبیق": "match", "مورد": "case"};
+  var AL = {"چاپ": "print", "ورودی": "input", "طول": "len", "دامنه": "range", "عدد_صحیح": "int", "عدد_اعشاری": "float", "متن": "str", "منطقی": "bool", "فهرست": "list", "چندتایی": "tuple", "دیکشنری": "dict", "مجموعه": "set", "جمع": "sum", "بیشینه": "max", "کمینه": "min", "مرتب": "sorted", "وارونه": "reversed", "نوع": "type", "باز": "open", "مطلق": "abs", "گرد": "round", "توان": "pow", "شمارش": "enumerate", "نگاشت": "map", "فیلتر": "filter", "زیپ": "zip", "همه": "all", "هرکدام": "any", "اسکی": "ascii", "دودویی": "bin", "بایت": "bytes", "فراخوانی_پذیر": "callable", "نویسه": "chr", "فهرست_نام_ها": "dir", "خارج_قسمت_باقی": "divmod", "ارزیابی": "eval", "اجرا_کد": "exec", "قالب": "format", "مجموعه_ثابت": "frozenset", "دریافت_ویژگی": "getattr", "دارد_ویژگی": "hasattr", "هش": "hash", "شانزده_دهی": "hex", "شناسه": "id", "نمونه_است": "isinstance", "زیرکلاس_است": "issubclass", "تکرارگر": "iter", "بعدی": "next", "شیء": "object", "هشت_هشتی": "oct", "کد_نویسه": "ord", "نمایش": "repr", "تنظیم_ویژگی": "setattr", "برش": "slice", "والد": "super", "مختلط": "complex", "ویژگی_ساز": "property", "متد_ایستا": "staticmethod", "متد_کلاس": "classmethod", "بایت_تغییرپذیر": "bytearray", "متغیرهای_محلی": "locals", "متغیرهای_سراسری": "globals", "استثنا": "Exception", "استثنای_پایه": "BaseException", "خطای_مقدار": "ValueError", "خطای_نوع": "TypeError", "خطای_نام": "NameError", "خطای_اندیس": "IndexError", "خطای_کلید": "KeyError", "خطای_تقسیم_بر_صفر": "ZeroDivisionError", "خطای_ویژگی": "AttributeError", "خطای_وارد_کردن": "ImportError", "خطای_سیستم": "OSError", "خطای_فایل_پیدا_نشد": "FileNotFoundError", "پایان_تکرار": "StopIteration", "خطای_اجرا": "RuntimeError", "خطای_ادعا": "AssertionError", "خطای_پیاده_نشده": "NotImplementedError", "خطای_سرریز": "OverflowError", "خطای_بازگشت": "RecursionError", "خطای_نوشتار": "SyntaxError", "خطای_تورفتگی": "IndentationError", "خطای_حسابی": "ArithmeticError", "گروه_استثنای_پایه": "BaseExceptionGroup", "خطای_مسدودی": "BlockingIOError", "خطای_لوله_شکسته": "BrokenPipeError", "خطای_بافر": "BufferError", "هشدار_بایت": "BytesWarning", "خطای_فرایند_فرزند": "ChildProcessError", "خطای_اتصال_قطع_شده": "ConnectionAbortedError", "خطای_اتصال": "ConnectionError", "خطای_اتصال_رد_شده": "ConnectionRefusedError", "خطای_اتصال_ریست": "ConnectionResetError", "هشدار_منسوخ": "DeprecationWarning", "خطای_پایان_فایل": "EOFError", "سه_نقطه": "Ellipsis", "هشدار_رمزگذاری": "EncodingWarning", "خطای_محیط": "EnvironmentError", "گروه_استثنا": "ExceptionGroup", "خطای_فایل_موجود": "FileExistsError", "خطای_اعشار": "FloatingPointError", "هشدار_آینده": "FutureWarning", "خروج_مولد": "GeneratorExit", "خطای_ورودی_خروجی": "IOError", "هشدار_وارد_کردن": "ImportWarning", "خطای_قطع_شده": "InterruptedError", "خطای_پوشه_است": "IsADirectoryError", "وقفه_صفحه_کلید": "KeyboardInterrupt", "خطای_جستجو": "LookupError", "خطای_حافظه": "MemoryError", "خطای_کتابخانه_پیدا_نشد": "ModuleNotFoundError", "خطای_پوشه_نیست": "NotADirectoryError", "پیاده_نشده": "NotImplemented", "هشدار_منسوخ_شدن_آینده": "PendingDeprecationWarning", "خطای_دسترسی": "PermissionError", "خطای_فرایند_پیدا_نشد": "ProcessLookupError", "خطای_پایان_پایتون": "PythonFinalizationError", "خطای_ارجاع": "ReferenceError", "هشدار_منبع": "ResourceWarning", "هشدار_اجرا": "RuntimeWarning", "پایان_تکرار_ناهمگام": "StopAsyncIteration", "هشدار_نوشتار": "SyntaxWarning", "خطای_سیستمی": "SystemError", "خروج_سیستم": "SystemExit", "خطای_تب": "TabError", "خطای_زمان": "TimeoutError", "خطای_متغیر_محلی": "UnboundLocalError", "خطای_رمزگشایی": "UnicodeDecodeError", "خطای_رمزگذاری": "UnicodeEncodeError", "خطای_یونیکد": "UnicodeError", "خطای_ترجمه_یونیکد": "UnicodeTranslateError", "هشدار_یونیکد": "UnicodeWarning", "هشدار_کاربر": "UserWarning", "هشدار": "Warning", "تکرارگر_ناهمگام": "aiter", "بعدی_ناهمگام": "anext", "نقطه_توقف": "breakpoint", "کامپایل": "compile", "حق_نشر": "copyright", "اعتبارات": "credits", "حذف_ویژگی": "delattr", "خروج": "exit", "راهنما": "help", "مجوز": "license", "نمای_حافظه": "memoryview", "ترک": "quit", "متغیرهای_شیء": "vars", "ساز": "__init__", "متن_شیء": "__str__", "نمایش_شیء": "__repr__", "طول_شیء": "__len__"};
+  var MET = {"اضافه": "append", "افزودن_همه": "extend", "درج": "insert", "بردار": "remove", "بردار_آخر": "pop", "پاک": "clear", "شاخص": "index", "شمار": "count", "مرتب_کن": "sort", "وارونه_کن": "reverse", "کپی": "copy", "کلیدها": "keys", "مقدارها": "values", "جفت_ها": "items", "بگیر": "get", "به_روز": "update", "پیش_فرض_بگذار": "setdefault", "بزرگ": "upper", "کوچک": "lower", "حذف_فاصله": "strip", "جدا_کن": "split", "بچسبان": "join", "جایگزین": "replace", "پیدا_کن": "find", "شروع_با": "startswith", "پایان_با": "endswith", "قالب_بده": "format", "عنوان": "title", "رقم_است": "isdigit", "حرف_است": "isalpha", "افزودن": "add", "اجتماع": "union", "اشتراک": "intersection", "تفاضل": "difference", "بخوان": "read", "بنویس": "write", "خط_بخوان": "readline", "خط_ها_را_بخوان": "readlines", "ببند": "close", "ریشه_دوم": "sqrt", "کف": "floor", "سقف": "ceil", "پی": "pi", "سینوس": "sin", "کسینوس": "cos", "تصادفی_صحیح": "randint", "انتخاب_کن": "choice", "بر_زن": "shuffle", "تصادفی_اعشاری": "random", "بخواب": "sleep", "زمان_اکنون": "time", "امروز": "today", "اکنون": "now", "پنجره": "window", "برچسب": "label", "دکمه": "button", "کادر_ورودی": "entry", "کادر_متن": "textarea", "چک_باکس": "checkbox", "خط_جدید": "row", "قرار_بده": "set", "پیام": "message", "پاک_همه": "clear_all", "جلو": "forward", "عقب": "backward", "راست": "right", "چپ": "left", "رنگ": "color", "سرعت": "speed", "قلم_بالا": "penup", "قلم_پایین": "pendown", "بوم": "canvas", "مستطیل": "rect", "دایره": "circle", "خط": "line", "نوشته": "text", "هنگام_فشار": "on_press", "هنگام_حرکت": "on_move", "هنگام_رها_کردن": "on_release", "هر_فریم": "every_frame", "توقف_بازی": "stop_game", "خط_ها_را_جدا_کن": "splitlines", "صفر_پر_کن": "zfill", "وسط_چین": "center", "چپ_چین": "ljust", "راست_چین": "rjust", "بزرگ_است": "isupper", "کوچک_است": "islower", "حرف_یا_رقم_است": "isalnum", "فاصله_است": "isspace", "کوچک_کامل": "casefold", "عوض_حروف": "swapcase", "سه_بخش": "partition", "سه_بخش_از_آخر": "rpartition", "رمزگذاری_کن": "encode", "رمزگشایی_کن": "decode", "پیدا_کن_از_آخر": "rfind", "شاخص_از_آخر": "rindex", "حذف_فاصله_چپ": "lstrip", "حذف_فاصله_راست": "rstrip", "حرف_اول_بزرگ": "capitalize", "بازکردن_تب": "expandtabs", "از_کلیدها": "fromkeys", "بردار_آخرین_جفت": "popitem", "زیرمجموعه_است": "issubset", "ابرمجموعه_است": "issuperset", "تفاضل_متقارن": "symmetric_difference", "دور_بینداز": "discard", "برو_به": "seek", "مکان_فعلی": "tell", "تخلیه": "flush", "خط_ها_را_بنویس": "writelines", "جدا_کن_از_آخر": "rsplit", "عددی_است": "isnumeric", "دهدهی_است": "isdecimal", "عنوان_است": "istitle"};
+  var CATALOG = [["abc", "کلاس_انتزاعی"], ["argparse", "آرگومان_خط_فرمان"], ["array", "آرایه"], ["ast", "درخت_نحو"], ["asyncio", "ناهمگام_سازی"], ["atexit", "هنگام_خروج"], ["base64", "بیس_شصت_و_چهار"], ["bisect", "تقسیم_دودویی"], ["builtins", "توابع_آماده"], ["bz2", "فشرده_ساز_بی_زد_دو"], ["calendar", "تقویم"], ["cmath", "ریاضی_مختلط"], ["cmd", "فرمان_تعاملی"], ["codecs", "رمزگذاری_متن"], ["collections", "مجموعه_ها"], ["colorsys", "رنگ_ها"], ["concurrent", "همزمانی"], ["configparser", "پیکربندی"], ["contextlib", "زمینه"], ["copy", "رونوشت"], ["csv", "سی_اس_وی"], ["ctypes", "سی_تایپ"], ["dataclasses", "کلاس_داده"], ["datetime", "تاریخ_زمان"], ["decimal", "اعشاری_دقیق"], ["difflib", "تفاوت_متن"], ["dis", "جداسازی_کد"], ["doctest", "آزمون_مستند"], ["email", "ایمیل"], ["enum", "شمارشی"], ["errno", "کد_خطا"], ["fnmatch", "الگوی_نام_فایل"], ["fractions", "کسرها"], ["ftplib", "اف_تی_پی"], ["functools", "ابزار_توابع"], ["gc", "زباله_روب"], ["getpass", "رمز_ورودی"], ["gettext", "ترجمه_متن"], ["glob", "جستجوی_فایل"], ["graphlib", "گراف"], ["gzip", "جی_زیپ"], ["hashlib", "هش_سازی"], ["heapq", "هرم"], ["hmac", "اچ_مک"], ["html", "اچ_تی_ام_ال"], ["http", "اچ_تی_تی_پی"], ["imaplib", "ایمپ"], ["importlib", "وارد_کردن_پویا"], ["inspect", "بازرسی"], ["io", "ورودی_خروجی"], ["ipaddress", "آدرس_آی_پی"], ["itertools", "تکرارگرها"], ["json", "جیسون"], ["keyword", "کلمات_کلیدی"], ["linecache", "کش_خط"], ["locale", "محلی_سازی"], ["logging", "گزارش_گیری"], ["lzma", "ال_زد_ام_ای"], ["mailbox", "صندوق_نامه"], ["math", "ریاضی"], ["mimetypes", "انواع_فایل"], ["mmap", "نگاشت_حافظه"], ["multiprocessing", "چند_پردازشی"], ["numbers", "اعداد"], ["operator", "عملگرها"], ["os", "سیستم_عامل"], ["pathlib", "مسیر"], ["pickle", "ذخیره_شیء"], ["pkgutil", "بسته_ها"], ["platform", "پلتفرم"], ["poplib", "پاپ"], ["pprint", "چاپ_زیبا"], ["queue", "صف"], ["random", "تصادفی"], ["re", "عبارت_منظم"], ["sched", "زمان_بند"], ["secrets", "رمزهای_امن"], ["select", "انتخاب_ورودی"], ["shelve", "قفسه"], ["shlex", "تجزیه_فرمان"], ["shutil", "ابزار_فایل"], ["signal", "سیگنال"], ["smtplib", "ارسال_ایمیل"], ["socket", "سوکت"], ["socketserver", "سرور_سوکت"], ["sqlite3", "پایگاه_داده"], ["ssl", "اس_اس_ال"], ["stat", "وضعیت_فایل"], ["statistics", "آمار"], ["string", "رشته"], ["struct", "ساختار_بایت"], ["subprocess", "زیرفرایند"], ["sys", "سیستم"], ["tarfile", "تار"], ["tempfile", "فایل_موقت"], ["textwrap", "بسته_بندی_متن"], ["threading", "نخ_ها"], ["time", "زمان"], ["timeit", "زمان_سنج"], ["tkinter", "رابط_تی_کی"], ["traceback", "ردیابی_خطا"], ["turtle", "لاک_پشت"], ["types", "انواع"], ["typing", "نوع_دهی"], ["unicodedata", "یونیکد"], ["unittest", "آزمون_واحد"], ["urllib", "یو_آر_ال"], ["uuid", "شناسه_یکتا"], ["venv", "محیط_مجازی"], ["warnings", "هشدارها"], ["wave", "موج_صدا"], ["weakref", "ارجاع_ضعیف"], ["webbrowser", "مرورگر"], ["xml", "ایکس_ام_ال"], ["zipfile", "فایل_زیپ"], ["zlib", "زد_لیب"], ["zoneinfo", "منطقه_زمانی"], ["this", "ذن_پایتون"], ["binascii", "تبدیل_دودویی"], ["bdb", "اشکال_یاب_پایه"], ["cProfile", "پروفایل_سریع"], ["code", "مفسر_تعاملی"], ["codeop", "کامپایل_تعاملی"], ["compileall", "کامپایل_همه"], ["contextvars", "متغیرهای_زمینه"], ["copyreg", "ثبت_رونوشت"], ["curses", "صفحه_متنی"], ["dbm", "پایگاه_کلیدی"], ["ensurepip", "نصب_پیپ"], ["faulthandler", "ردیاب_کرش"], ["fcntl", "کنترل_فایل_یونیکس"], ["filecmp", "مقایسه_فایل"], ["fileinput", "ورودی_فایل_ها"], ["getopt", "گزینه_های_فرمان"], ["grp", "گروه_های_یونیکس"], ["marshal", "سریال_داخلی"], ["modulefinder", "یابنده_ماژول"], ["msvcrt", "ویندوز_کنسول"], ["netrc", "اطلاعات_ورود_شبکه"], ["optparse", "تجزیه_گزینه"], ["pdb", "اشکال_یاب"], ["pickletools", "ابزار_ذخیره_شیء"], ["plistlib", "پی_لیست"], ["profile", "پروفایل"], ["pstats", "آمار_پروفایل"], ["pty", "ترمینال_مجازی"], ["pwd", "کاربران_یونیکس"], ["py_compile", "کامپایل_پایتون"], ["pyclbr", "مرورگر_کلاس"], ["pydoc", "مستندات"], ["pyexpat", "تجزیه_سریع_ایکس_ام_ال"], ["quopri", "رمزگذاری_چاپ_پذیر"], ["readline", "خط_فرمان_ویرایشی"], ["reprlib", "نمایش_کوتاه"], ["resource", "منابع_سیستم"], ["rlcompleter", "تکمیل_خودکار"], ["runpy", "اجرای_ماژول"], ["selectors", "انتخاب_گر"], ["site", "مسیرهای_سایت"], ["stringprep", "آماده_سازی_رشته"], ["symtable", "جدول_نماد"], ["sysconfig", "پیکربندی_سیستم"], ["syslog", "گزارش_سیستم"], ["tabnanny", "بررسی_تب"], ["termios", "ترمینال"], ["token", "توکن"], ["tokenize", "توکن_ساز"], ["tomllib", "تومل"], ["trace", "ردیابی_اجرا"], ["tracemalloc", "ردیابی_حافظه"], ["tty", "تی_تی_وای"], ["winreg", "رجیستری_ویندوز"], ["winsound", "صدای_ویندوز"], ["wsgiref", "دبلیو_اس_جی_آی"], ["xmlrpc", "ایکس_ام_ال_آر_پی_سی"], ["zipapp", "برنامه_زیپ"], ["zipimport", "وارد_کردن_از_زیپ"], ["antigravity", "ضد_جاذبه"]];
+  var MOD_FA = {"کلاس_انتزاعی": "abc", "آرگومان_خط_فرمان": "argparse", "آرایه": "array", "درخت_نحو": "ast", "ناهمگام_سازی": "asyncio", "هنگام_خروج": "atexit", "بیس_شصت_و_چهار": "base64", "تقسیم_دودویی": "bisect", "توابع_آماده": "builtins", "فشرده_ساز_بی_زد_دو": "bz2", "تقویم": "calendar", "ریاضی_مختلط": "cmath", "فرمان_تعاملی": "cmd", "رمزگذاری_متن": "codecs", "مجموعه_ها": "collections", "رنگ_ها": "colorsys", "همزمانی": "concurrent", "پیکربندی": "configparser", "زمینه": "contextlib", "رونوشت": "copy", "سی_اس_وی": "csv", "سی_تایپ": "ctypes", "کلاس_داده": "dataclasses", "تاریخ_زمان": "datetime", "اعشاری_دقیق": "decimal", "تفاوت_متن": "difflib", "جداسازی_کد": "dis", "آزمون_مستند": "doctest", "ایمیل": "email", "شمارشی": "enum", "کد_خطا": "errno", "الگوی_نام_فایل": "fnmatch", "کسرها": "fractions", "اف_تی_پی": "ftplib", "ابزار_توابع": "functools", "زباله_روب": "gc", "رمز_ورودی": "getpass", "ترجمه_متن": "gettext", "جستجوی_فایل": "glob", "گراف": "graphlib", "جی_زیپ": "gzip", "هش_سازی": "hashlib", "هرم": "heapq", "اچ_مک": "hmac", "اچ_تی_ام_ال": "html", "اچ_تی_تی_پی": "http", "ایمپ": "imaplib", "وارد_کردن_پویا": "importlib", "بازرسی": "inspect", "ورودی_خروجی": "io", "آدرس_آی_پی": "ipaddress", "تکرارگرها": "itertools", "جیسون": "json", "کلمات_کلیدی": "keyword", "کش_خط": "linecache", "محلی_سازی": "locale", "گزارش_گیری": "logging", "ال_زد_ام_ای": "lzma", "صندوق_نامه": "mailbox", "ریاضی": "math", "انواع_فایل": "mimetypes", "نگاشت_حافظه": "mmap", "چند_پردازشی": "multiprocessing", "اعداد": "numbers", "عملگرها": "operator", "سیستم_عامل": "os", "مسیر": "pathlib", "ذخیره_شیء": "pickle", "بسته_ها": "pkgutil", "پلتفرم": "platform", "پاپ": "poplib", "چاپ_زیبا": "pprint", "صف": "queue", "تصادفی": "random", "عبارت_منظم": "re", "زمان_بند": "sched", "رمزهای_امن": "secrets", "انتخاب_ورودی": "select", "قفسه": "shelve", "تجزیه_فرمان": "shlex", "ابزار_فایل": "shutil", "سیگنال": "signal", "ارسال_ایمیل": "smtplib", "سوکت": "socket", "سرور_سوکت": "socketserver", "پایگاه_داده": "sqlite3", "اس_اس_ال": "ssl", "وضعیت_فایل": "stat", "آمار": "statistics", "رشته": "string", "ساختار_بایت": "struct", "زیرفرایند": "subprocess", "سیستم": "sys", "تار": "tarfile", "فایل_موقت": "tempfile", "بسته_بندی_متن": "textwrap", "نخ_ها": "threading", "زمان": "time", "زمان_سنج": "timeit", "رابط_تی_کی": "tkinter", "ردیابی_خطا": "traceback", "لاک_پشت": "turtle", "انواع": "types", "نوع_دهی": "typing", "یونیکد": "unicodedata", "آزمون_واحد": "unittest", "یو_آر_ال": "urllib", "شناسه_یکتا": "uuid", "محیط_مجازی": "venv", "هشدارها": "warnings", "موج_صدا": "wave", "ارجاع_ضعیف": "weakref", "مرورگر": "webbrowser", "ایکس_ام_ال": "xml", "فایل_زیپ": "zipfile", "زد_لیب": "zlib", "منطقه_زمانی": "zoneinfo", "ذن_پایتون": "this", "رابط": "pfgui", "بازی": "pfgame", "تبدیل_دودویی": "binascii", "اشکال_یاب_پایه": "bdb", "پروفایل_سریع": "cProfile", "مفسر_تعاملی": "code", "کامپایل_تعاملی": "codeop", "کامپایل_همه": "compileall", "متغیرهای_زمینه": "contextvars", "ثبت_رونوشت": "copyreg", "صفحه_متنی": "curses", "پایگاه_کلیدی": "dbm", "نصب_پیپ": "ensurepip", "ردیاب_کرش": "faulthandler", "کنترل_فایل_یونیکس": "fcntl", "مقایسه_فایل": "filecmp", "ورودی_فایل_ها": "fileinput", "گزینه_های_فرمان": "getopt", "گروه_های_یونیکس": "grp", "سریال_داخلی": "marshal", "یابنده_ماژول": "modulefinder", "ویندوز_کنسول": "msvcrt", "اطلاعات_ورود_شبکه": "netrc", "تجزیه_گزینه": "optparse", "اشکال_یاب": "pdb", "ابزار_ذخیره_شیء": "pickletools", "پی_لیست": "plistlib", "پروفایل": "profile", "آمار_پروفایل": "pstats", "ترمینال_مجازی": "pty", "کاربران_یونیکس": "pwd", "کامپایل_پایتون": "py_compile", "مرورگر_کلاس": "pyclbr", "مستندات": "pydoc", "تجزیه_سریع_ایکس_ام_ال": "pyexpat", "رمزگذاری_چاپ_پذیر": "quopri", "خط_فرمان_ویرایشی": "readline", "نمایش_کوتاه": "reprlib", "منابع_سیستم": "resource", "تکمیل_خودکار": "rlcompleter", "اجرای_ماژول": "runpy", "انتخاب_گر": "selectors", "مسیرهای_سایت": "site", "آماده_سازی_رشته": "stringprep", "جدول_نماد": "symtable", "پیکربندی_سیستم": "sysconfig", "گزارش_سیستم": "syslog", "بررسی_تب": "tabnanny", "ترمینال": "termios", "توکن": "token", "توکن_ساز": "tokenize", "تومل": "tomllib", "ردیابی_اجرا": "trace", "ردیابی_حافظه": "tracemalloc", "تی_تی_وای": "tty", "رجیستری_ویندوز": "winreg", "صدای_ویندوز": "winsound", "دبلیو_اس_جی_آی": "wsgiref", "ایکس_ام_ال_آر_پی_سی": "xmlrpc", "برنامه_زیپ": "zipapp", "وارد_کردن_از_زیپ": "zipimport", "ضد_جاذبه": "antigravity", "کیوی": "kivy", "نامپای": "numpy", "پاندا": "pandas", "ریکوئست": "requests", "فلسک": "flask", "جنگو": "django", "فست_ای_پی_آی": "fastapi", "یووی_کورن": "uvicorn", "جینجا": "jinja2", "پایگیم": "pygame", "ماتپلات_لیب": "matplotlib", "پیلو": "PIL", "سای_پای": "scipy", "یادگیری_ماشین": "sklearn", "زیبا_سوپ": "bs4", "سلنیوم": "selenium", "اس_کیو_ال_آلکمی": "sqlalchemy", "اوپن_سی_وی": "cv2", "یوتیوب_دی_ال": "yt_dlp", "پای_کیو_تی": "PyQt5", "تورچ": "torch", "تنسورفلو": "tensorflow", "اکسل": "openpyxl", "ردیس": "redis", "پای_تست": "pytest", "ریچ": "rich", "کلیک": "click", "اصلاح_حروف": "arabic_reshaper", "جهت_متن": "bidi", "تلگرام_بات": "telebot", "ای_او_اچ_تی_تی_پی": "aiohttp", "وب_سوکت": "websockets", "فیلم_پای": "moviepy"};
+  var has = function (o, k) { return Object.prototype.hasOwnProperty.call(o, k); };
+  var DIGITS = { "۰": "0", "۱": "1", "۲": "2", "۳": "3", "۴": "4", "۵": "5", "۶": "6", "۷": "7", "۸": "8", "۹": "9", "٠": "0", "١": "1", "٢": "2", "٣": "3", "٤": "4", "٥": "5", "٦": "6", "٧": "7", "٨": "8", "٩": "9" };
+  function faDigits(s) { return s.replace(/[۰-۹٠-٩]/g, function (c) { return DIGITS[c]; }); }
+  function encName(n) { return "pf_" + Array.from(n).map(function (c) { return c.codePointAt(0).toString(16); }).join("x"); }
+  function decodeNames(s) {
+    return String(s).replace(/pf_([0-9a-f]+(?:x[0-9a-f]+)*)/g, function (m, h) {
+      return h.split("x").map(function (x) { return String.fromCodePoint(parseInt(x, 16)); }).join("");
+    });
+  }
+  function mapName(n, on) {
+    if (on) { if (has(KW, n)) return KW[n]; if (has(AL, n)) return AL[n]; }
+    return /^[\x00-\x7f]+$/.test(n) ? n : encName(n);
+  }
+
+  /* f-string را به .format تبدیل می‌کنیم تا موتور نیازی به پشتیبانی f-string نداشته باشد */
+  function convertF(prefix, q, body, closed, on) {
+    var lit = "", args = [], i = 0;
+    while (i < body.length) {
+      var ch = body[i];
+      if (ch === "\\") { lit += body.substr(i, 2); i += 2; continue; }
+      if (ch === "{") {
+        if (body[i + 1] === "{") { lit += "{{"; i += 2; continue; }
+        var depth = 0, j = i + 1, quote = null, convPos = -1, specPos = -1;
+        for (; j < body.length; j++) {
+          var d = body[j];
+          if (quote) { if (d === "\\") { j++; continue; } if (d === quote) quote = null; continue; }
+          if (d === "'" || d === '"') { quote = d; continue; }
+          if (d === "(" || d === "[" || d === "{") depth++;
+          else if (d === ")" || d === "]") depth--;
+          else if (d === "}") { if (depth === 0) break; depth--; }
+          else if (depth === 0 && d === "!" && body[j + 1] !== "=" && convPos < 0 && specPos < 0) convPos = j;
+          else if (depth === 0 && d === ":" && specPos < 0) specPos = j;
+        }
+        if (j >= body.length) { lit += body.slice(i); i = body.length; break; }
+        var exprEnd = convPos >= 0 ? convPos : (specPos >= 0 ? specPos : j);
+        var expr = body.slice(i + 1, exprEnd);
+        var conv = convPos >= 0 ? body.slice(convPos, specPos >= 0 ? specPos : j) : "";
+        var spec = specPos >= 0 ? body.slice(specPos, j) : "";
+        args.push("(" + translate(expr, on) + ")");
+        lit += "{" + conv + spec + "}";
+        i = j + 1; continue;
+      }
+      if (ch === "}") { if (body[i + 1] === "}") { lit += "}}"; i += 2; } else { lit += "}"; i++; } continue; }
+      lit += ch; i++;
+    }
+    return prefix + q + lit + (closed ? q : "") + ".format(" + args.join(", ") + ")";
+  }
+
+  var STR_RE = /([rRbBuUfF]{0,2})("""|'''|"|')/y;
+  var NAME_RE = /[\p{L}_][\p{L}\p{M}\p{N}_‌‍]*/uy;
+  var NUM_RE = /[0-9۰-۹٠-٩][0-9a-zA-Z_.۰-۹٠-٩]*/y;
+
+  function translate(code, on) {
+    var out = "", i = 0, n = code.length, m, importCtx = false, asNext = false, usedMods = {}, aliases = {};
+    code.split("\n").forEach(function (line) {
+      var im = /^\s*(?:وارد|import)\s+([^#]+)/.exec(line);
+      if (im) im[1].split(",").forEach(function (part) {
+        var pp = part.trim().split(/\s+/), base = pp[0].split(".")[0];
+        if (has(MOD_FA, base)) usedMods[base] = 1;
+        if ((pp[1] === "as" || pp[1] === "به_عنوان") && pp[2]) aliases[pp[2]] = 1;
+      });
+      var fm = /^\s*(?:از|from)\s+(\S+)\s+(?:وارد|import)/.exec(line);
+      if (fm && has(MOD_FA, fm[1].split(".")[0])) usedMods[fm[1].split(".")[0]] = 1;
+    });
+    while (i < n) {
+      var c = code[i];
+      if (c === "\n") { importCtx = false; out += c; i++; continue; }
+      if (c === "#") { var e = code.indexOf("\n", i); if (e < 0) e = n; out += code.slice(i, e); i = e; continue; }
+      STR_RE.lastIndex = i; m = STR_RE.exec(code);
+      if (m) {
+        var prefix = m[1], q = m[2], j = i + m[0].length, bodyStart = j;
+        while (j < n) {
+          if (code[j] === "\\") { j += 2; continue; }
+          if (code.startsWith(q, j)) break;
+          if (q.length === 1 && code[j] === "\n") break;
+          j++;
+        }
+        j = Math.min(j, n);
+        var closed = j < n && code.startsWith(q, j);
+        var end = closed ? j + q.length : j;
+        if (/[fF]/.test(prefix)) out += convertF(prefix.replace(/[fF]/g, ""), q, code.slice(bodyStart, j), closed, on);
+        else out += code.slice(i, end);
+        i = end; continue;
+      }
+      NAME_RE.lastIndex = i; m = NAME_RE.exec(code);
+      if (m) {
+        var nm = m[0], prevDot = /[^.\s]\.[ \t]*$/.test(out), mp, plain = /^[\x00-\x7f]+$/.test(nm);
+        if (prevDot) mp = (on && has(MET, nm)) ? MET[nm] : (plain ? nm : encName(nm));
+        else if (asNext) { mp = plain ? nm : encName(nm); asNext = false; }
+        else if (on && has(MOD_FA, nm) && (importCtx || (usedMods[nm] && !aliases[nm]))) mp = MOD_FA[nm];
+        else if (on && importCtx && has(MET, nm)) mp = MET[nm];
+        else mp = mapName(nm, on);
+        if (!prevDot) { if (mp === "import" || mp === "from") importCtx = true; else if (mp === "as") asNext = true; }
+        out += mp; i += nm.length; continue;
+      }
+      NUM_RE.lastIndex = i; m = NUM_RE.exec(code);
+      if (m) { out += faDigits(m[0]); i += m[0].length; continue; }
+      out += c === "،" ? "," : (c === "؛" ? ";" : c); i++;
+    }
+    return out;
+  }
+  window.__pfTranslate = translate; // برای آزمایش
+
+  /* ======================= نمونه‌ها و درس‌ها ======================= */
+  var SAMPLE = '# به پایتون دری خوش آمدید\n# دکمه‌ی زرد سمت چپ را بزنید تا برنامه اجرا شود.\n\nنام = "دنیا"\nچاپ("سلام", نام)\n\nبرای i در دامنه(1, 4):\n    چاپ("شماره", i)\n';
+  var SALAM = '# کتابخانه‌ی نمونه: با «وارد salam» در برنامه‌ها بیاورید.\n\nتعریف سلام_کن(نام):\n    برگردان "سلام " + نام + "، به پایتون دری خوش آمدید!"\n';
+
+  var LESSONS = [
+    { f: "lesson_0.py", t: "درس ۰ — این برنامه چطور کار می‌کند و چه کارهایی را نمی‌کند", c: `# درس ۰ — این برنامه چطور کار می‌کند و چه کارهایی را نمی‌کند
+#
+# ═══ چطور کار می‌کند ═══
+# ۱. کد را در ویرایشگر بنویسید. هر تغییر خودکار در مرورگر ذخیره می‌شود.
+# ۲. دکمه‌ی زرد را بزنید (یا Ctrl+Enter). کلمه‌های فارسی (اگر، برای، چاپ ...)
+#    به پایتون تبدیل می‌شوند. فقط «نام‌ها» عوض می‌شوند؛ متن داخل "..." و توضیح‌ها
+#    (#) دست نمی‌خورند و شماره‌ی خط‌ها هم همان می‌ماند.
+# ۳. کد با موتور ساده اجرا می‌شود، یک پایتون که داخل خود مرورگر کار می‌کند.
+#    نتیجه در پنجره‌ی سفید خروجی می‌آید. اگر برنامه ورودی بخواهد (ورودی / input)،
+#    پایین همان پنجره بنویسید و Enter بزنید.
+#
+# ═══ چه کارهایی را نمی‌کند ═══
+#   • موتور ساده پایتون کامل نیست. بخش بزرگی از زبان را دارد، ولی فقط بعضی از
+#     کتابخانه‌های استاندارد را (فهرستش: تنظیمات > کتابخانه‌ها). pip ندارد و
+#     کتابخانه‌هایی مثل numpy، requests و sqlite3 در آن نیستند.
+#   • فایل واقعی روی کامپیوتر نمی‌خواند و نمی‌نویسد. فایل‌های شما فقط در حافظه‌ی
+#     همین مرورگر ذخیره می‌شوند. پاک‌کردن اطلاعات مرورگر آن‌ها را هم پاک می‌کند و
+#     در مرورگر یا دستگاه دیگر دیده نمی‌شوند.
+#   • برنامه‌ی سنگین یا حلقه‌ی بی‌پایان صفحه را کند می‌کند. دکمه‌ی «توقف» کمک می‌کند.
+#   • اشکال‌یاب، تکمیل خودکار و ساخت exe ندارد.
+#   • برای پایتون کامل، نسخه‌ی دسکتاپ (python-farsi.zip) از پایتون خودتان استفاده می‌کند.
+#   • نام متغیر را برابر کلمه‌های کلیدی (خطا، در، از ...) یا توابع آماده (جمع، نوع ...) نگذارید.
+
+چاپ("درس ۰ را خواندید. حالا سراغ درس ۱ بروید.")
+` },
+    { f: "lesson_1.py", t: "درس ۱ — اولین برنامه و کلمه‌های فارسی", c: `# درس ۱ — اولین برنامه و کلمه‌های فارسی
+#
+# چاپ = print  (نوشتن چیزی در خروجی). هر دو شکل زیر کار می‌کنند.
+
+چاپ("سلام")
+print("سلام")
+
+# چند چیز را با کاما کنار هم چاپ کنید:
+چاپ("جمع ۲ و ۳ برابر است با", 2 + 3)
+
+# ─── جدول کلمه‌های فارسی ───
+# کلمه‌های کلیدی:
+#   اگر=if   وگر=elif   وگرنه=else   برای=for   در=in   مادام=while
+#   تعریف=def   برگردان=return   کلاس=class   درست=True   نادرست=False   هیچ=None
+#   و=and   یا=or   نه=not   است=is   وارد=import   از=from   به_عنوان=as
+#   امتحان=try   خطا=except   سرانجام=finally   بشکن=break   ادامه=continue
+#   بگذر=pass   با=with   بالابر=raise   سراسری=global   تولید=yield
+#   لامبدا=lambda   حذف=del   ادعا=assert   غیرمحلی=nonlocal   ناهمگام=async   منتظر=await
+#   تطبیق=match   مورد=case   (استثناها مثل خطای_مقدار و همه‌ی متدهای رایج هم فارسی‌اند)
+#
+# توابع آماده:
+#   چاپ=print   ورودی=input   طول=len   دامنه=range   عدد_صحیح=int   عدد_اعشاری=float
+#   متن=str   منطقی=bool   فهرست=list   چندتایی=tuple   دیکشنری=dict   مجموعه=set
+#   جمع=sum   بیشینه=max   کمینه=min   مرتب=sorted   وارونه=reversed   نوع=type
+#   باز=open   مطلق=abs   گرد=round   توان=pow   شمارش=enumerate   نگاشت=map
+#   فیلتر=filter   زیپ=zip   همه=all   هرکدام=any
+` },
+    { f: "lesson_2.py", t: "درس ۲ — متغیرها و عددها", c: `# درس ۲ — متغیرها و عددها
+
+نام = "علی"
+سن = 25
+قد = 1.78
+
+چاپ("نام:", نام)
+چاپ("سن:", سن)
+چاپ("نوع سن:", نوع(سن))
+
+# محاسبه
+سال_بعد = سن + 1
+چاپ("سال بعد", سال_بعد, "ساله می‌شوید")
+چاپ("۷ تقسیم بر ۲:", 7 / 2, "  خارج‌قسمت:", 7 // 2, "  باقی‌مانده:", 7 % 2)
+چاپ("۲ به توان ۱۰:", 2 ** 10)
+
+# متن را با f قالب‌بندی کنید
+چاپ(f"{نام} با قد {قد} متر")
+
+# تبدیل نوع
+عدد_متنی = "42"
+چاپ(عدد_صحیح(عدد_متنی) + 8)
+` },
+    { f: "lesson_3.py", t: "درس ۳ — شرط‌ها (اگر ... وگرنه)", c: `# درس ۳ — شرط‌ها (اگر ... وگرنه)
+#
+# بعد از هر شرط یک «:» می‌آید و خط‌های بعدی ۴ فاصله تورفتگی دارند.
+# ویرایشگر بعد از «:» خودش تورفتگی می‌گذارد.
+
+سن = 16
+
+اگر سن >= 18:
+    چاپ("بزرگسال")
+وگر سن >= 13:
+    چاپ("نوجوان")
+وگرنه:
+    چاپ("کودک")
+
+# شرط‌های ترکیبی با و / یا / نه
+دما = 25
+بارانی = نادرست
+اگر دما > 20 و نه بارانی:
+    چاپ("هوا برای پیاده‌روی خوب است")
+` },
+    { f: "lesson_4.py", t: "درس ۴ — حلقه‌ها", c: `# درس ۴ — حلقه‌ها
+
+# تکرار با تعداد مشخص: دامنه(5) یعنی ۰ تا ۴
+برای i در دامنه(5):
+    چاپ("شماره", i)
+
+# جدول ضرب ۷
+برای n در دامنه(1, 11):
+    چاپ(f"۷ × {n} = {7 * n}")
+
+# تکرار تا وقتی شرط برقرار است
+شمارنده = 3
+مادام شمارنده > 0:
+    چاپ("شمارش معکوس:", شمارنده)
+    شمارنده = شمارنده - 1
+چاپ("شروع!")
+
+# بشکن = خروج از حلقه، ادامه = رفتن به دور بعد
+برای عدد در دامنه(1, 20):
+    اگر عدد % 2 == 0:
+        ادامه
+    اگر عدد > 9:
+        بشکن
+    چاپ("عدد فرد:", عدد)
+` },
+    { f: "lesson_5.py", t: "درس ۵ — تابع‌ها", c: `# درس ۵ — تابع‌ها
+#
+# تابع یعنی یک تکه کد که اسم دارد و هر وقت لازم شد صدایش می‌زنید.
+
+تعریف سلام_کن(نام):
+    چاپ("سلام", نام)
+
+سلام_کن("سارا")
+سلام_کن("رضا")
+
+# تابع می‌تواند نتیجه برگرداند
+تعریف مساحت_مستطیل(طول_ضلع, عرض):
+    برگردان طول_ضلع * عرض
+
+چاپ("مساحت:", مساحت_مستطیل(4, 5))
+
+# مقدار پیش‌فرض برای ورودی
+تعریف تخفیف(قیمت, درصد=10):
+    برگردان قیمت - قیمت * درصد / 100
+
+چاپ(تخفیف(200))
+چاپ(تخفیف(200, 25))
+` },
+    { f: "lesson_6.py", t: "درس ۶ — فهرست‌ها و دیکشنری‌ها", c: `# درس ۶ — فهرست‌ها و دیکشنری‌ها
+
+# فهرست: چند مقدار پشت سر هم
+میوه_ها = ["سیب", "موز", "پرتقال"]
+میوه_ها.append("انگور")
+چاپ(میوه_ها)
+چاپ("اولی:", میوه_ها[0], " آخری:", میوه_ها[-1])
+چاپ("تعداد:", طول(میوه_ها))
+
+برای میوه در میوه_ها:
+    چاپ("- " + میوه)
+
+اعداد = [5, 2, 9, 1]
+چاپ("مرتب:", مرتب(اعداد), " بزرگ‌ترین:", بیشینه(اعداد), " جمع:", جمع(اعداد))
+
+# دیکشنری: هر مقدار یک اسم (کلید) دارد
+شخص = {"نام": "مینا", "سن": 30}
+شخص["شهر"] = "شیراز"
+چاپ(شخص)
+چاپ(شخص["نام"])
+
+برای کلید, مقدار در شخص.items():
+    چاپ(کلید, "=", مقدار)
+` },
+    { f: "lesson_7.py", t: "درس ۷ — متن‌ها و مدیریت خطا", c: `# درس ۷ — متن‌ها و مدیریت خطا
+
+جمله = "  پایتون دری خیلی ساده است  "
+چاپ(جمله.strip())
+چاپ(جمله.strip().replace("ساده", "جذاب"))
+
+کلمه_ها = جمله.split()
+چاپ(کلمه_ها)
+چاپ("تعداد کلمه‌ها:", طول(کلمه_ها))
+چاپ(" - ".join(کلمه_ها))
+
+انگلیسی = "hello world"
+چاپ(انگلیسی.upper(), انگلیسی.title(), انگلیسی[0:5])
+
+# مدیریت خطا: اگر اشتباهی پیش آمد برنامه نمی‌ترکد
+امتحان:
+    چاپ(10 / 0)
+خطا ZeroDivisionError:
+    چاپ("تقسیم بر صفر ممکن نیست")
+
+امتحان:
+    عدد = عدد_صحیح("سلام")
+خطا ValueError:
+    چاپ("این متن عدد نیست")
+` },
+    { f: "lesson_8.py", t: "درس ۸ — استفاده از کتابخانه‌ها", c: `# درس ۸ — استفاده از کتابخانه‌ها
+#
+# وارد = import   از = from   به_عنوان = as
+# نام کتابخانه‌ها انگلیسی می‌ماند. کتابخانه‌های موجود را در تنظیمات > کتابخانه‌ها ببینید.
+
+وارد math
+وارد random
+وارد time
+از math وارد pi
+
+چاپ("ریشه‌ی ۱۶:", math.sqrt(16))
+چاپ("عدد پی:", گرد(pi, 4))
+چاپ("عدد شانسی ۱ تا ۱۰۰:", random.randint(1, 100))
+چاپ("زمان (ثانیه از سال ۱۹۷۰):", گرد(time.time()))
+
+# فایل salam.py در بخش «فایل‌ها» هست و می‌توانید آن را import کنید.
+وارد salam
+چاپ(salam.سلام_کن("دوست من"))
+` },
+    { f: "lesson_9.py", t: "درس ۹ — پروژه‌ی کوچک: بازی حدس عدد", c: `# درس ۹ — پروژه‌ی کوچک: بازی حدس عدد
+#
+# اینجا از ورودی استفاده می‌شود. وقتی پنجره‌ی خروجی باز شد، عدد را در کادر پایین
+# بنویسید و Enter بزنید.
+
+وارد random
+
+راز = random.randint(1, 20)
+تلاش = 0
+چاپ("عددی بین ۱ تا ۲۰ در ذهنم است. حدس بزنید!")
+
+مادام درست:
+    امتحان:
+        حدس = عدد_صحیح(ورودی("حدس شما: "))
+    خطا ValueError:
+        چاپ("لطفاً یک عدد بنویسید.")
+        ادامه
+    تلاش = تلاش + 1
+    اگر حدس < راز:
+        چاپ("بالاتر")
+    وگر حدس > راز:
+        چاپ("پایین‌تر")
+    وگرنه:
+        چاپ(f"آفرین! بعد از {تلاش} تلاش پیدا کردید.")
+        بشکن
+` },
+    { f: "lesson_10.py", t: "درس ۱۰ — ساخت برنامه‌ی گرافیکی (ماشین‌حساب)", c: `# درس ۱۰ — ساخت برنامه‌ی گرافیکی (ماشین‌حساب)
+#
+# کتابخانه‌ی «رابط» ابزارهای پنجره را می‌دهد: برچسب (متن)، دکمه، کادر_ورودی،
+# کادر_متن، چک_باکس. نتیجه بالای پنجره‌ی خروجی ساخته می‌شود.
+# خط_جدید ابزارهای بعدی را در سطر تازه می‌گذارد.
+# بگیر(ابزار) مقدار را می‌خواند و قرار_بده(ابزار, متن) مقدار را عوض می‌کند.
+# دکمه یک تابع می‌گیرد و هر بار که کلیک شود آن را اجرا می‌کند.
+
+وارد رابط
+
+رابط.پنجره("ماشین‌حساب")
+رابط.برچسب("عدد اول:")
+الف = رابط.کادر_ورودی("مثلاً 12")
+رابط.خط_جدید()
+رابط.برچسب("عدد دوم:")
+ب = رابط.کادر_ورودی("مثلاً 5")
+رابط.خط_جدید()
+نتیجه = رابط.برچسب("نتیجه: ؟")
+
+تعریف جمع_کن():
+    امتحان:
+        مقدار = عدد_اعشاری(رابط.بگیر(الف)) + عدد_اعشاری(رابط.بگیر(ب))
+        رابط.قرار_بده(نتیجه, "نتیجه: " + متن(مقدار))
+    خطا خطای_مقدار:
+        رابط.قرار_بده(نتیجه, "لطفاً دو عدد بنویسید")
+
+رابط.خط_جدید()
+رابط.دکمه("جمع", جمع_کن)
+` },
+    { f: "lesson_11.py", t: "درس ۱۱ — کتابخانه‌ها و استثناها با نام فارسی، و لاک‌پشت", c: `# درس ۱۱ — کتابخانه‌ها و استثناها با نام فارسی، و نقاشی با لاک‌پشت
+#
+# نام فارسی کتابخانه‌ها را در تنظیمات > کتابخانه‌ها می‌بینید و می‌توانید
+# با همان نام وارد کنید. فهرست شامل وضعیت نصب هم هست.
+
+وارد ریاضی
+وارد تصادفی
+چاپ("ریشه‌ی ۱۶:", ریاضی.ریشه_دوم(16))
+چاپ("عدد شانسی ۱ تا ۱۰۰:", تصادفی.تصادفی_صحیح(1, 100))
+
+# استثناها هم فارسی هستند:
+امتحان:
+    چاپ(10 / 0)
+خطا خطای_تقسیم_بر_صفر:
+    چاپ("تقسیم بر صفر ممکن نیست")
+
+# نقاشی: لاک‌پشت زیر خروجی نقاشی می‌کند
+وارد لاک_پشت
+قلم = لاک_پشت.Turtle()
+قلم.سرعت(0)
+قلم.رنگ("orange")
+برای i در دامنه(36):
+    قلم.جلو(120)
+    قلم.راست(100)
+` },
+    { f: "lesson_13.py", t: "درس ۱۳ — پنجره با tkinter ساده‌شده", c: `# درس ۱۳ — شمارنده با tkinter ساده‌شده (از اول نصب است)
+import tkinter as tk
+
+root = tk.Tk()
+root.title("شمارنده")
+n = [0]
+lab = tk.Label(root, text="0")
+lab.pack()
+
+def inc():
+    n[0] += 1
+    lab.config(text=str(n[0]))
+
+tk.Button(root, text="یکی بیشتر", command=inc).pack()
+name = tk.Entry(root)
+name.pack()
+tk.Button(root, text="سلام بده", command=lambda: tk.messagebox.showinfo("سلام", "سلام " + name.get())).pack()
+root.mainloop()
+` },
+    { f: "lesson_14.py", t: "درس ۱۴ — numpy و pandas ساده‌شده", c: `# درس ۱۴ — numpy و pandas (از اول نصب‌اند)
+import numpy as np
+import pandas as pd
+
+a = np.array([1, 2, 3, 4])
+print(a * 2, a.sum(), a.mean())
+m = np.array([[1, 2], [3, 4]])
+print(m.T)
+print(m @ m)
+
+df = pd.DataFrame({"نام": ["علی", "سارا", "رضا"], "نمره": [18, 20, 15]})
+print(df)
+print("میانگین:", df["نمره"].mean())
+print(df.sort_values("نمره").head(2))
+` },
+    { f: "lesson_15.py", t: "درس ۱۵ — برنامه‌ی kivy ساده‌شده", c: `# درس ۱۵ — شمارنده با kivy ساده‌شده (از اول نصب است)
+from kivy.app import App
+from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.label import Label
+from kivy.uix.button import Button
+
+
+class CounterApp(App):
+    title = "شمارنده"
+
+    def build(self):
+        self.n = 0
+        box = BoxLayout(orientation="vertical")
+        self.lab = Label(text="0")
+        btn = Button(text="یکی بیشتر")
+        btn.bind(on_press=self.inc)
+        box.add_widget(self.lab)
+        box.add_widget(btn)
+        return box
+
+    def inc(self, inst):
+        self.n += 1
+        self.lab.text = str(self.n)
+
+
+CounterApp().run()
+` },
+    { f: "lesson_16.py", t: "درس ۱۶ — نمودار با matplotlib ساده‌شده", c: `# درس ۱۶ — نمودار (از اول نصب است)
+import matplotlib.pyplot as plt
+
+x = [1, 2, 3, 4, 5]
+y = [1, 4, 9, 16, 25]
+plt.plot(x, y, "ro-", label="مربع")
+plt.title("نمودار مربع‌ها")
+plt.xlabel("عدد")
+plt.ylabel("مربع")
+plt.grid(True)
+plt.legend()
+plt.show()
+
+plt.bar(["الف", "ب", "ج"], [5, 9, 3])
+plt.title("ستونی")
+plt.show()
+` },
+    { f: "slingshot.py", t: "بازی تیرکمان — به هدف بزنید", c: `# درس ۱۲ — بازی تیرکمان
+#
+# با کتابخانه‌ی «بازی» (بوم و رویدادها) و «تصادفی» ساخته شده است.
+# دکمه‌ی زرد را بزنید. اگر کتابخانه‌ها نصب نبودند، «نصب و اجرا» را بزنید.
+# توپ زرد را با انگشت یا ماوس عقب بکشید و رها کنید تا به هدف قرمز بخورد.
+# هر دور ۸ تیر دارید. بعد از آخرین تیر، یک بار بزنید تا بازی دوباره شروع شود.
+
+وارد بازی
+وارد تصادفی
+
+عرض = 480
+ارتفاع = 360
+لنگر_x = 100
+لنگر_y = 250
+
+بازی.بوم(عرض, ارتفاع)
+
+حالت = {"کشیدن": نادرست, "پرواز": نادرست, "x": لنگر_x, "y": لنگر_y, "vx": 0, "vy": 0, "امتیاز": 0, "تیر": 8, "پیام": "توپ را عقب بکش و رها کن"}
+هدف = {"x": 360, "y": 200, "r": 24}
+
+تعریف هدف_جدید():
+    هدف["x"] = تصادفی.تصادفی_صحیح(280, 440)
+    هدف["y"] = تصادفی.تصادفی_صحیح(110, 290)
+
+تعریف برگرداندن_توپ():
+    حالت["پرواز"] = نادرست
+    حالت["x"] = لنگر_x
+    حالت["y"] = لنگر_y
+    حالت["vx"] = 0
+    حالت["vy"] = 0
+
+تعریف فشار(x, y):
+    اگر حالت["تیر"] <= 0 و نه حالت["پرواز"]:
+        حالت["تیر"] = 8
+        حالت["امتیاز"] = 0
+        حالت["پیام"] = "دوباره شروع شد"
+        هدف_جدید()
+        برگرداندن_توپ()
+        برگردان
+    اگر حالت["پرواز"]:
+        برگردان
+    اگر (x - حالت["x"]) ** 2 + (y - حالت["y"]) ** 2 <= 35 ** 2:
+        حالت["کشیدن"] = درست
+
+تعریف حرکت(x, y):
+    اگر حالت["کشیدن"]:
+        dx = x - لنگر_x
+        dy = y - لنگر_y
+        d = (dx * dx + dy * dy) ** 0.5
+        اگر d > 80:
+            dx = dx * 80 / d
+            dy = dy * 80 / d
+        حالت["x"] = لنگر_x + dx
+        حالت["y"] = لنگر_y + dy
+
+تعریف رها(x, y):
+    اگر حالت["کشیدن"]:
+        حالت["کشیدن"] = نادرست
+        حالت["vx"] = (لنگر_x - حالت["x"]) * 0.22
+        حالت["vy"] = (لنگر_y - حالت["y"]) * 0.22
+        حالت["پرواز"] = درست
+        حالت["تیر"] = حالت["تیر"] - 1
+
+تعریف فریم(dt):
+    بازی.پاک("#EAF4FF")
+    بازی.مستطیل(0, 330, عرض, 30, "#6B8E23")
+    بازی.مستطیل(لنگر_x - 6, لنگر_y, 12, 80, "#5D4037")
+    بازی.دایره(هدف["x"], هدف["y"], هدف["r"], "#E53935")
+    بازی.دایره(هدف["x"], هدف["y"], هدف["r"] * 0.6, "#FFFFFF")
+    بازی.دایره(هدف["x"], هدف["y"], هدف["r"] * 0.25, "#E53935")
+    بازی.خط(لنگر_x - 8, لنگر_y, حالت["x"], حالت["y"], "#3E2723", 4)
+    بازی.خط(لنگر_x + 8, لنگر_y, حالت["x"], حالت["y"], "#3E2723", 4)
+    بازی.دایره(حالت["x"], حالت["y"], 10, "#FFB300")
+    اگر حالت["پرواز"]:
+        حالت["vy"] = حالت["vy"] + 0.45
+        حالت["x"] = حالت["x"] + حالت["vx"]
+        حالت["y"] = حالت["y"] + حالت["vy"]
+        فاصله = ((حالت["x"] - هدف["x"]) ** 2 + (حالت["y"] - هدف["y"]) ** 2) ** 0.5
+        اگر فاصله <= هدف["r"] + 10:
+            حالت["امتیاز"] = حالت["امتیاز"] + 1
+            حالت["پیام"] = "خوردی! آفرین"
+            هدف_جدید()
+            برگرداندن_توپ()
+        وگر حالت["y"] > 330 یا حالت["x"] > عرض یا حالت["x"] < 0:
+            حالت["پیام"] = "نخورد، دوباره"
+            برگرداندن_توپ()
+    پیام = حالت["پیام"]
+    اگر حالت["تیر"] <= 0 و نه حالت["پرواز"]:
+        پیام = "پایان بازی. امتیاز شما: " + متن(حالت["امتیاز"]) + " (برای شروع دوباره بزنید)"
+    بازی.نوشته(10, 8, "امتیاز: " + متن(حالت["امتیاز"]) + "    تیر: " + متن(حالت["تیر"]), "#222222", 18)
+    بازی.نوشته(10, 36, پیام, "#555555", 15)
+
+بازی.هنگام_فشار(فشار)
+بازی.هنگام_حرکت(حرکت)
+بازی.هنگام_رها_کردن(رها)
+بازی.هر_فریم(فریم)
+` },
+    { f: "archery.py", t: "بازی تیر و کمان — ۵ تیر به هدف", c: `# بازی تیر و کمان — ۵ تیر به هدف
+#
+# کمان سمت چپ است. وسط کش (نزدیک کمان) را بگیرید، به سمت پایین چپ عقب بکشید و رها کنید.
+# هدف بالا و پایین می‌رود. وسط هدف ۱۰ امتیاز دارد و کنار آن ۸، ۶، ۴ و ۲ امتیاز.
+# ۵ تیر دارید. بعد از تیر پنجم، یک بار بزنید تا دوباره شروع شود.
+# بار اول «نصب و اجرا» را بزنید تا کتابخانه‌ی «بازی» برای این پروژه نصب شود.
+
+وارد بازی
+
+عرض = 480
+ارتفاع = 360
+کمان_x = 92
+کمان_y = 200
+مرز_هدف = 400
+
+بازی.بوم(عرض, ارتفاع)
+
+ح = {"کشیدن": نادرست, "پرواز": نادرست, "px": کمان_x, "py": کمان_y, "x": 0, "y": 0, "vx": 0, "vy": 0, "تیر": 5, "امتیاز": 0, "پیام": "کش کمان را عقب بکش و رها کن", "هدف_y": 200, "جهت": 1}
+چسبیده = []
+
+تعریف دوباره():
+    ح["کشیدن"] = نادرست
+    ح["پرواز"] = نادرست
+    ح["px"] = کمان_x
+    ح["py"] = کمان_y
+    ح["تیر"] = 5
+    ح["امتیاز"] = 0
+    ح["پیام"] = "دوباره شروع شد"
+    چسبیده.clear()
+
+تعریف فشار(x, y):
+    اگر ح["تیر"] <= 0 و نه ح["پرواز"]:
+        دوباره()
+        برگردان
+    اگر ح["پرواز"]:
+        برگردان
+    اگر (x - ح["px"]) ** 2 + (y - ح["py"]) ** 2 <= 45 ** 2:
+        ح["کشیدن"] = درست
+
+تعریف حرکت(x, y):
+    اگر ح["کشیدن"]:
+        dx = x - کمان_x
+        dy = y - کمان_y
+        d = (dx * dx + dy * dy) ** 0.5
+        اگر d > 80:
+            dx = dx * 80 / d
+            dy = dy * 80 / d
+        ح["px"] = کمان_x + dx
+        ح["py"] = کمان_y + dy
+
+تعریف رها(x, y):
+    اگر ح["کشیدن"]:
+        ح["کشیدن"] = نادرست
+        vx = (کمان_x - ح["px"]) * 0.2
+        vy = (کمان_y - ح["py"]) * 0.2
+        اگر vx < 2:
+            ح["پیام"] = "بیشتر عقب بکش"
+            ح["px"] = کمان_x
+            ح["py"] = کمان_y
+            برگردان
+        ح["x"] = کمان_x
+        ح["y"] = کمان_y
+        ح["vx"] = vx
+        ح["vy"] = vy
+        ح["پرواز"] = درست
+        ح["تیر"] = ح["تیر"] - 1
+        ح["px"] = کمان_x
+        ح["py"] = کمان_y
+
+تعریف امتیاز_تیر(y):
+    فاصله = مطلق(y - ح["هدف_y"])
+    اگر فاصله <= 10:
+        برگردان 10
+    اگر فاصله <= 22:
+        برگردان 8
+    اگر فاصله <= 34:
+        برگردان 6
+    اگر فاصله <= 46:
+        برگردان 4
+    اگر فاصله <= 60:
+        برگردان 2
+    برگردان 0
+
+تعریف رسم_تیر(x, y, nx, ny):
+    بازی.خط(x - nx * 44, y - ny * 44, x, y, "#5D4037", 3)
+    بازی.دایره(x, y, 3, "#455A64")
+    بازی.خط(x - nx * 44, y - ny * 44, x - nx * 38 - ny * 5, y - ny * 38 + nx * 5, "#C62828", 2)
+    بازی.خط(x - nx * 44, y - ny * 44, x - nx * 38 + ny * 5, y - ny * 38 - nx * 5, "#C62828", 2)
+
+تعریف رسم_کمان():
+    نقطه_قبل_x = کمان_x - 12
+    نقطه_قبل_y = کمان_y - 62
+    برای i در دامنه(1, 13):
+        t = i / 12
+        bx = (1 - t) ** 2 * (کمان_x - 12) + 2 * (1 - t) * t * (کمان_x - 44) + t ** 2 * (کمان_x - 12)
+        by = (1 - t) ** 2 * (کمان_y - 62) + 2 * (1 - t) * t * کمان_y + t ** 2 * (کمان_y + 62)
+        بازی.خط(نقطه_قبل_x, نقطه_قبل_y, bx, by, "#6D4C41", 6)
+        نقطه_قبل_x = bx
+        نقطه_قبل_y = by
+    بازی.خط(کمان_x - 12, کمان_y - 62, ح["px"], ح["py"], "#EEEEEE", 2)
+    بازی.خط(کمان_x - 12, کمان_y + 62, ح["px"], ح["py"], "#EEEEEE", 2)
+
+تعریف فریم(dt):
+    ح["هدف_y"] = ح["هدف_y"] + ح["جهت"] * 1.2
+    اگر ح["هدف_y"] > 280:
+        ح["جهت"] = -1
+    اگر ح["هدف_y"] < 90:
+        ح["جهت"] = 1
+    بازی.پاک("#DFF1FF")
+    بازی.مستطیل(0, 320, عرض, 40, "#7CB342")
+    # هدف
+    cy = ح["هدف_y"]
+    بازی.مستطیل(مرز_هدف + 4, cy, 8, 360 - cy, "#8D6E63")
+    بازی.مستطیل(مرز_هدف, cy - 60, 16, 120, "#FAFAFA")
+    بازی.مستطیل(مرز_هدف, cy - 46, 16, 92, "#212121")
+    بازی.مستطیل(مرز_هدف, cy - 34, 16, 68, "#1E88E5")
+    بازی.مستطیل(مرز_هدف, cy - 22, 16, 44, "#E53935")
+    بازی.مستطیل(مرز_هدف, cy - 10, 16, 20, "#FDD835")
+    # تیرهای چسبیده به هدف
+    برای ت در چسبیده:
+        رسم_تیر(مرز_هدف + 8, ت[0] + (cy - ت[2]), 1, 0)
+    رسم_کمان()
+    اگر نه ح["پرواز"] و ح["تیر"] > 0:
+        رسم_تیر(ح["px"] + 28, ح["py"], 1, 0)
+    اگر ح["پرواز"]:
+        ح["vy"] = ح["vy"] + 0.25
+        ح["x"] = ح["x"] + ح["vx"]
+        ح["y"] = ح["y"] + ح["vy"]
+        سرعت = (ح["vx"] ** 2 + ح["vy"] ** 2) ** 0.5
+        رسم_تیر(ح["x"], ح["y"], ح["vx"] / سرعت, ح["vy"] / سرعت)
+        اگر ح["x"] >= مرز_هدف:
+            امتیاز = امتیاز_تیر(ح["y"])
+            ح["امتیاز"] = ح["امتیاز"] + امتیاز
+            اگر امتیاز > 0:
+                ح["پیام"] = "خوردی! " + متن(امتیاز) + " امتیاز"
+                چسبیده.append([0, ح["y"], cy])
+            وگرنه:
+                ح["پیام"] = "نخورد"
+            ح["پرواز"] = نادرست
+        وگر ح["y"] > 320 یا ح["x"] < 0:
+            ح["پیام"] = "نخورد"
+            ح["پرواز"] = نادرست
+    پیام = ح["پیام"]
+    اگر ح["تیر"] <= 0 و نه ح["پرواز"]:
+        پیام = "پایان! امتیاز شما: " + متن(ح["امتیاز"]) + " از ۵۰ (برای شروع دوباره بزنید)"
+    بازی.نوشته(10, 8, "امتیاز: " + متن(ح["امتیاز"]) + "    تیر باقی‌مانده: " + متن(ح["تیر"]), "#1B1F27", 18)
+    بازی.نوشته(10, 36, پیام, "#37474F", 15)
+
+بازی.هنگام_فشار(فشار)
+بازی.هنگام_حرکت(حرکت)
+بازی.هنگام_رها_کردن(رها)
+بازی.هر_فریم(فریم)
+` }
+  ];
+  window.__pfLessons = LESSONS;
+
+
+  /* ======================= وضعیت ======================= */
+  var settings = Object.assign({ fontSize: 20, nums: "right", dir: "auto", persian: true }, store.get("pf-settings", {}));
+  if (["right", "left", "off"].indexOf(settings.nums) < 0) settings.nums = "right";
+  settings.fontSize = Math.max(12, Math.min(36, +settings.fontSize || 20));
+  var files = store.get("pf-files", null);
+  if (!files || typeof files !== "object" || Array.isArray(files)) files = { "hello.py": SAMPLE, "salam.py": SALAM };
+  var tabs = store.get("pf-tabs", null);
+  if (!Array.isArray(tabs) || !tabs.length) tabs = [{ name: "hello.py" }];
+  tabs = tabs.filter(function (t) { return t && typeof t.name === "string"; });
+  tabs.forEach(function (t) { if (!has(files, t.name)) files[t.name] = ""; });
+  if (!tabs.length) { files["hello.py"] = SAMPLE; tabs = [{ name: "hello.py" }]; }
+  var active = Math.max(0, Math.min(store.get("pf-active", 0) | 0, tabs.length - 1));
+  var badLine = 0, saveTimer = null;
+  var projects = store.get("pf-projects", null);
+  if (!projects || typeof projects !== "object" || Array.isArray(projects)) projects = {};
+  Object.keys(projects).forEach(function (k) { if (!projects[k] || !Array.isArray(projects[k].libs)) projects[k] = { libs: [] }; });
+  if (!Object.keys(projects).length) projects["پروژه‌ی من"] = { libs: [] };
+  var curProject = store.get("pf-project", "");
+  if (!has(projects, curProject)) curProject = Object.keys(projects)[0];
+  function persist() { store.set("pf-files", files); store.set("pf-tabs", tabs); store.set("pf-active", active); store.set("pf-settings", settings); store.set("pf-projects", projects); store.set("pf-project", curProject); }
+  function persistSoon() { clearTimeout(saveTimer); saveTimer = setTimeout(persist, 300); }
+  function faNum(n) { return String(n).replace(/\d/g, function (d) { return "۰۱۲۳۴۵۶۷۸۹"[d]; }); }
+
+  /* ======================= ویرایشگر ======================= */
+  var ta = $("ta"), hl = $("hl"), gut = $("gut"), scroller = $("scroll"), inner = $("inner"), app = $("app");
+  var HL_KW = new Set("False None True and as assert async await break class continue def del elif else except finally for from global if import in is lambda nonlocal not or pass raise return try while with yield".split(" ").concat(Object.keys(KW)));
+  var HL_BI = new Set("print input len range int float str bool list tuple dict set sum max min sorted reversed type open abs round pow enumerate map filter zip all any isinstance repr format iter next hash id chr ord divmod bin hex oct callable getattr setattr hasattr object super".split(" ").concat(Object.keys(AL)));
+  var TOKEN = /(#[^\n]*)|([rRbBfFuU]{0,2}(?:"""[\s\S]*?(?:"""|$)|'''[\s\S]*?(?:'''|$)|"(?:\\.|[^"\\\n])*"?|'(?:\\.|[^'\\\n])*'?))|([0-9۰-۹][0-9._a-zA-Z۰-۹]*)|([\p{L}_][\p{L}\p{M}\p{N}_‌]*)/gu;
+  function esc(s) { return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+  function highlightLines(code) {
+    var lines = [""], last = 0, m;
+    function emit(text, cls) {
+      var parts = text.split("\n");
+      for (var k = 0; k < parts.length; k++) {
+        if (k > 0) lines.push("");
+        if (parts[k]) lines[lines.length - 1] += cls ? '<i class="' + cls + '">' + esc(parts[k]) + "</i>" : esc(parts[k]);
+      }
+    }
+    TOKEN.lastIndex = 0;
+    while ((m = TOKEN.exec(code))) {
+      if (m[0].length === 0) { TOKEN.lastIndex++; continue; }
+      var cls;
+      if (m[1]) cls = "c"; else if (m[2]) cls = "s"; else if (m[3]) cls = "n";
+      else cls = HL_KW.has(m[4]) ? "k" : (HL_BI.has(m[4]) ? "b" : null);
+      if (m.index > last) emit(code.slice(last, m.index), null);
+      emit(m[0], cls);
+      last = m.index + m[0].length;
+    }
+    emit(code.slice(last), null);
+    return lines;
+  }
+  var rafId = 0;
+  function render() {
+    rafId = 0;
+    var lines = highlightLines(ta.value), n = lines.length, html = "";
+    for (var i = 0; i < n; i++) html += '<div class="l' + (i + 1 === badLine ? " bad" : "") + '">' + (lines[i] || "​") + "</div>";
+    hl.innerHTML = html;
+    inner.style.setProperty("--d", String(n).length);
+    while (gut.children.length < n) { var g = document.createElement("div"); g.className = "g"; g.textContent = gut.children.length + 1; gut.appendChild(g); }
+    while (gut.children.length > n) gut.removeChild(gut.lastChild);
+    var hs = new Array(n), k;
+    for (k = 0; k < n; k++) hs[k] = hl.children[k].offsetHeight;
+    for (k = 0; k < n; k++) { gut.children[k].style.height = hs[k] + "px"; gut.children[k].classList.toggle("bad", k + 1 === badLine); }
+    updatePos();
+  }
+  function renderSoon() { if (!rafId) rafId = requestAnimationFrame(render); }
+  function caretLine() { return ta.value.slice(0, ta.selectionStart).split("\n").length; }
+  function updatePos() {
+    var before = ta.value.slice(0, ta.selectionStart);
+    $("stPos").textContent = "خط " + faNum(before.split("\n").length) + "  ستون " + faNum(ta.selectionStart - before.lastIndexOf("\n"));
+  }
+  function revealCaret() {
+    var el = hl.children[caretLine() - 1]; if (!el) return;
+    var sb = scroller.getBoundingClientRect(), eb = el.getBoundingClientRect();
+    var top = eb.top - sb.top, bottom = eb.bottom - sb.top, room = 90;
+    if (top < 8) scroller.scrollTop += top - 8;
+    else if (bottom > sb.height - room) scroller.scrollTop += bottom - (sb.height - room);
+  }
+  function insertText(text, back) {
+    ta.focus();
+    var ok = false;
+    try { ok = document.execCommand("insertText", false, text); } catch (e) {}
+    if (!ok) { ta.setRangeText(text, ta.selectionStart, ta.selectionEnd, "end"); ta.dispatchEvent(new Event("input")); }
+    if (back) { var p = ta.selectionStart - back; ta.setSelectionRange(p, p); }
+    updatePos();
+  }
+  ta.addEventListener("input", function () {
+    var t = tabs[active]; if (!t) return;
+    files[t.name] = ta.value; badLine = 0;
+    persistSoon(); renderSoon(); setTimeout(revealCaret, 30);
+  });
+  ["keyup", "click", "select", "focus"].forEach(function (ev) { ta.addEventListener(ev, function () { updatePos(); if (ev === "keyup") revealCaret(); }); });
+  ta.addEventListener("keydown", function (e) {
+    if ((e.ctrlKey || e.metaKey) && e.key === "Enter") { e.preventDefault(); run(); return; }
+    if (e.key === "F5") { e.preventDefault(); run(); return; }
+    if (e.key === "Enter" && !e.ctrlKey && !e.metaKey && !e.isComposing) {
+      e.preventDefault();
+      var before = ta.value.slice(0, ta.selectionStart), line = before.slice(before.lastIndexOf("\n") + 1);
+      var indent = /^[ \t]*/.exec(line)[0];
+      if (/:\s*$/.test(line)) indent += "    ";
+      insertText("\n" + indent); return;
+    }
+    if (e.key === "Tab") {
+      e.preventDefault();
+      var s = ta.selectionStart, en = ta.selectionEnd, v = ta.value;
+      if (s === en && !e.shiftKey) { insertText("    "); return; }
+      var ls = v.lastIndexOf("\n", s - 1) + 1, lines = v.slice(ls, en).split("\n");
+      lines = lines.map(function (l) { return e.shiftKey ? l.replace(/^ {1,4}/, "") : "    " + l; });
+      ta.setRangeText(lines.join("\n"), ls, en, "select");
+      ta.dispatchEvent(new Event("input"));
+    }
+  });
+  window.addEventListener("resize", renderSoon);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(renderSoon);
+  try { if (window.ResizeObserver) new ResizeObserver(renderSoon).observe(hl); } catch (e) {}
+  (function fit() {
+    var vv = window.visualViewport; if (!vv) return;
+    function f() { app.style.height = Math.round(vv.height) + "px"; renderSoon(); }
+    vv.addEventListener("resize", f); f();
+  })();
+
+  /* ردیف نمادها بالای کیبورد */
+  [["⇥", "    ", 0], ["( )", "()", 1], ["[ ]", "[]", 1], ["{ }", "{}", 1], ['" "', '""', 1], ["' '", "''", 1], [":", ":", 0], ["=", "=", 0], ["#", "#", 0], ["<", "<", 0], [">", ">", 0], ["+", "+", 0], ["-", "-", 0], ["*", "*", 0], ["/", "/", 0], ["%", "%", 0], ["_", "_", 0], [",", ",", 0], [".", ".", 0]].forEach(function (k) {
+    var b = document.createElement("button"); b.type = "button"; b.textContent = k[0]; b.setAttribute("aria-label", k[1].trim() || "تب");
+    b.addEventListener("pointerdown", function (e) { e.preventDefault(); });
+    b.addEventListener("click", function () { insertText(k[1], k[2]); });
+    $("keys").appendChild(b);
+  });
+
+  function applySettings() {
+    inner.style.setProperty("--fs", settings.fontSize + "px");
+    inner.className = "inner" + (settings.dir === "ltr" ? " ltr" : "") + (settings.nums === "left" ? " left" : (settings.nums === "off" ? " off" : ""));
+    $("fsRange").value = settings.fontSize; $("fsVal").textContent = faNum(settings.fontSize);
+    $("numsSel").value = settings.nums; $("dirSel").value = settings.dir === "ltr" ? "ltr" : "auto"; $("persianChk").checked = !!settings.persian;
+    renderSoon();
+  }
+
+  /* ======================= زبانه‌ها ======================= */
+  function showTab() {
+    var t = tabs[active];
+    ta.value = t ? files[t.name] || "" : "";
+    scroller.scrollTop = 0; badLine = 0;
+    $("ttl").textContent = t ? t.name : "";
+    render();
+  }
+  function renderTabs() {
+    var box = $("tabs"); box.textContent = "";
+    tabs.forEach(function (t, i) {
+      var tab = document.createElement("div"); tab.className = "tab" + (i === active ? " on" : ""); tab.setAttribute("role", "tab");
+      var nm = document.createElement("span"); nm.className = "nm"; nm.textContent = t.name; tab.appendChild(nm);
+      tab.addEventListener("click", function (e) { if (e.target.closest(".x") || e.target.tagName === "INPUT") return; if (i === active) startRename(tab, t); else selectTab(i); });
+      if (i === active && tabs.length > 1) {
+        var x = document.createElement("span"); x.className = "x"; x.textContent = "×"; x.setAttribute("aria-label", "بستن " + t.name);
+        x.addEventListener("click", function () { closeTab(i); }); tab.appendChild(x);
+      }
+      box.appendChild(tab);
+    });
+    var plus = document.createElement("button"); plus.className = "tab add"; plus.textContent = "+"; plus.setAttribute("aria-label", "فایل جدید");
+    plus.addEventListener("click", newFile); box.appendChild(plus);
+    var on = box.querySelector(".tab.on"); if (on && on.scrollIntoView) on.scrollIntoView({ block: "nearest", inline: "nearest" });
+  }
+  function selectTab(i) { active = i; renderTabs(); showTab(); persistSoon(); }
+  function closeTab(i) {
+    tabs.splice(i, 1);
+    if (!tabs.length) { var nm = uniqueName("program.py"); files[nm] = ""; tabs.push({ name: nm }); }
+    if (active >= tabs.length) active = tabs.length - 1; else if (i < active) active--;
+    renderTabs(); showTab(); persist();
+  }
+  function uniqueName(base) {
+    if (!has(files, base)) return base;
+    var stem = base.replace(/\.py$/, ""), k = 2;
+    while (has(files, stem + "_" + k + ".py")) k++;
+    return stem + "_" + k + ".py";
+  }
+  function newFile() {
+    var nm = uniqueName("program.py"); files[nm] = "";
+    tabs.push({ name: nm }); active = tabs.length - 1;
+    renderTabs(); showTab(); persist(); ta.focus();
+  }
+  function openFile(name) {
+    var i = tabs.findIndex(function (t) { return t.name === name; });
+    if (i < 0) { tabs.push({ name: name }); i = tabs.length - 1; }
+    closeSheets(); selectTab(i);
+  }
+  function startRename(tab, t) {
+    var nm = tab.querySelector(".nm"); if (!nm) return;
+    var inp = document.createElement("input"); inp.value = t.name; inp.setAttribute("aria-label", "نام فایل");
+    tab.replaceChild(inp, nm); inp.focus(); inp.select();
+    var done = false;
+    function commit() {
+      if (done) return; done = true;
+      var v = inp.value.trim().replace(/[\\\/]/g, "_");
+      if (v && !/\.py$/.test(v)) v += ".py";
+      if (v && v !== t.name && !has(files, v)) { files[v] = files[t.name]; delete files[t.name]; t.name = v; persist(); }
+      renderTabs(); $("ttl").textContent = t.name;
+    }
+    inp.addEventListener("blur", commit);
+    inp.addEventListener("keydown", function (e) { if (e.key === "Enter") commit(); if (e.key === "Escape") { inp.value = t.name; commit(); } });
+  }
+
+  /* ======================= پنجره‌ها ======================= */
+  var sheets = [$("outSheet"), $("setSheet")];
+  function openSheet(s) { s.hidden = false; }
+  function closeSheets() { sheets.forEach(function (s) { s.hidden = true; }); }
+  sheets.forEach(function (s) { s.addEventListener("mousedown", function (e) { if (e.target === s && s !== $("outSheet")) closeSheets(); }); });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") { if (!$("outSheet").hidden) closeOutput(); else { closeSheets(); hideMore(); } } });
+  function toast(msg) {
+    var el = document.createElement("div"); el.className = "toast"; el.textContent = msg; el.setAttribute("role", "status");
+    document.body.appendChild(el); setTimeout(function () { el.remove(); }, 1600);
+  }
+
+  /* ======================= موتور پایتون (Skulpt) ======================= */
+  var SK_MAIN = ["https://cdnjs.cloudflare.com/ajax/libs/skulpt/1.2.0/skulpt.min.js", "https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt.min.js", "https://unpkg.com/skulpt@1.2.0/dist/skulpt.min.js"];
+  var SK_STD = ["https://cdnjs.cloudflare.com/ajax/libs/skulpt/1.2.0/skulpt-stdlib.js", "https://cdn.jsdelivr.net/npm/skulpt@1.2.0/dist/skulpt-stdlib.js", "https://unpkg.com/skulpt@1.2.0/dist/skulpt-stdlib.js"];
+  function loadScript(src) {
+    return new Promise(function (res, rej) {
+      var s = document.createElement("script"), timer = setTimeout(function () { s.remove(); rej(new Error("timeout")); }, 25000);
+      s.src = src; s.onload = function () { clearTimeout(timer); res(); };
+      s.onerror = function () { clearTimeout(timer); s.remove(); rej(new Error("load")); };
+      document.head.appendChild(s);
+    });
+  }
+  function loadFirst(list, check) {
+    return list.reduce(function (p, src) {
+      return p.catch(function () { if (check()) return; return loadScript(src).then(function () { if (!check()) throw new Error("bad"); }); });
+    }, Promise.reject()).then(function () { if (!check()) throw new Error("none"); });
+  }
+  var enginePromise = null;
+  function loadEngine() {
+    if (enginePromise) return enginePromise;
+    $("stEngine").textContent = "موتور پایتون: در حال بارگذاری…";
+    enginePromise = tryReal().then(function () { $("stEngine").textContent = "موتور پایتون: واقعی (کامل)"; fillLibs(); }, function () { return loadFirst(SK_MAIN, function () { return !!window.Sk && !!Sk.configure; })
+      .then(function () { return loadFirst(SK_STD, function () { return !!window.Sk && !!Sk.builtinFiles; }); })
+      .then(function () { injectShims(); $("stEngine").textContent = "موتور پایتون: ساده"; fillLibs(); }); })
+      .catch(function (e) { enginePromise = null; $("stEngine").textContent = "موتور پایتون: بارگذاری نشد"; throw e; });
+    return enginePromise;
+  }
+  var SHIM_FILES = {"src/lib/numpy.py": "# numpy ساده‌شده (پایتون خالص) برای پایتون دری: آرایه‌ی یک‌بعدی و دوبعدی\nimport math as _m\nimport random as _r\n\npi = _m.pi\ne = _m.e\ninf = float(\"inf\")\nnan = float(\"nan\")\n\n\ndef _flat(x):\n    out = []\n    for v in x:\n        if isinstance(v, (list, tuple)):\n            out.extend(_flat(v))\n        elif isinstance(v, ndarray):\n            out.extend(_flat(v._d))\n        else:\n            out.append(v)\n    return out\n\n\ndef _shape(d):\n    s = []\n    while isinstance(d, list):\n        s.append(len(d))\n        if len(d) == 0:\n            break\n        d = d[0]\n    return tuple(s)\n\n\ndef _conv(x):\n    if isinstance(x, ndarray):\n        return [_conv(v) for v in x._d] if isinstance(x._d, list) else x._d\n    if isinstance(x, (list, tuple)):\n        return [_conv(v) for v in x]\n    return x\n\n\ndef _map(d, f):\n    if isinstance(d, list):\n        return [_map(v, f) for v in d]\n    return f(d)\n\n\ndef _zip(a, b, f):\n    if isinstance(a, list) and isinstance(b, list):\n        if len(a) != len(b):\n            raise ValueError(\"شکل دو آرایه یکی نیست: %d و %d\" % (len(a), len(b)))\n        return [_zip(x, y, f) for x, y in zip(a, b)]\n    if isinstance(a, list):\n        return [_zip(x, b, f) for x in a]\n    if isinstance(b, list):\n        return [_zip(a, y, f) for y in b]\n    return f(a, b)\n\n\ndef _data(x):\n    return x._d if isinstance(x, ndarray) else _conv(x)\n\n\nclass ndarray(object):\n    def __init__(self, d):\n        self._d = d\n\n    @property\n    def shape(self):\n        return _shape(self._d)\n\n    @property\n    def ndim(self):\n        return len(_shape(self._d))\n\n    @property\n    def size(self):\n        return len(_flat(self._d))\n\n    @property\n    def T(self):\n        if self.ndim < 2:\n            return self\n        return ndarray([list(r) for r in zip(*self._d)])\n\n    def tolist(self):\n        return _conv(self._d)\n\n    def flatten(self):\n        return ndarray(_flat(self._d))\n\n    def copy(self):\n        return ndarray(_conv(self._d))\n\n    def reshape(self, *shape):\n        if len(shape) == 1 and isinstance(shape[0], (tuple, list)):\n            shape = tuple(shape[0])\n        flat = _flat(self._d)\n        if -1 in shape:\n            known = 1\n            for s in shape:\n                if s != -1:\n                    known *= s\n            shape = tuple(len(flat) // known if s == -1 else s for s in shape)\n        total = 1\n        for s in shape:\n            total *= s\n        if total != len(flat):\n            raise ValueError(\"نمی‌شود %d عضو را به شکل %s درآورد\" % (len(flat), str(shape)))\n\n        def build(fl, sh):\n            if len(sh) == 1:\n                return list(fl)\n            step = len(fl) // sh[0]\n            return [build(fl[i * step:(i + 1) * step], sh[1:]) for i in range(sh[0])]\n        return ndarray(build(flat, shape))\n\n    def astype(self, t):\n        return ndarray(_map(self._d, t))\n\n    def __len__(self):\n        return len(self._d)\n\n    def __iter__(self):\n        for v in self._d:\n            yield ndarray(v) if isinstance(v, list) else v\n\n    def __getitem__(self, i):\n        if isinstance(i, tuple) and len(i) == 2:\n            rows = self._d[i[0]]\n            if isinstance(i[0], int):\n                return ndarray(rows)[i[1]] if isinstance(rows, list) else rows\n            return ndarray([r[i[1]] for r in rows])\n        v = self._d[i]\n        if isinstance(v, list):\n            return ndarray(v)\n        return v\n\n    def __setitem__(self, i, v):\n        if isinstance(i, tuple) and len(i) == 2:\n            self._d[i[0]][i[1]] = v\n        else:\n            self._d[i] = _data(v)\n\n    def _op(self, o, f):\n        return ndarray(_zip(self._d, _data(o), f))\n\n    def __add__(self, o): return self._op(o, lambda a, b: a + b)\n    def __radd__(self, o): return self._op(o, lambda a, b: b + a)\n    def __sub__(self, o): return self._op(o, lambda a, b: a - b)\n    def __rsub__(self, o): return self._op(o, lambda a, b: b - a)\n    def __mul__(self, o): return self._op(o, lambda a, b: a * b)\n    def __rmul__(self, o): return self._op(o, lambda a, b: b * a)\n    def __truediv__(self, o): return self._op(o, lambda a, b: a / b)\n    def __rtruediv__(self, o): return self._op(o, lambda a, b: b / a)\n    def __floordiv__(self, o): return self._op(o, lambda a, b: a // b)\n    def __mod__(self, o): return self._op(o, lambda a, b: a % b)\n    def __pow__(self, o): return self._op(o, lambda a, b: a ** b)\n    def __neg__(self): return ndarray(_map(self._d, lambda a: -a))\n    def __gt__(self, o): return self._op(o, lambda a, b: a > b)\n    def __lt__(self, o): return self._op(o, lambda a, b: a < b)\n    def __ge__(self, o): return self._op(o, lambda a, b: a >= b)\n    def __le__(self, o): return self._op(o, lambda a, b: a <= b)\n    def __eq__(self, o): return self._op(o, lambda a, b: a == b)\n\n    def __matmul__(self, o):\n        return dot(self, o)\n\n    def sum(self, axis=None):\n        return sum(self, axis)\n\n    def mean(self, axis=None):\n        return mean(self, axis)\n\n    def max(self, axis=None):\n        return max(self, axis)\n\n    def min(self, axis=None):\n        return min(self, axis)\n\n    def std(self):\n        return std(self)\n\n    def argmax(self):\n        f = _flat(self._d)\n        return _argm(f, True)\n\n    def argmin(self):\n        return _argm(_flat(self._d), False)\n\n    def __repr__(self):\n        return \"array(\" + str(_conv(self._d)) + \")\"\n\n    __str__ = lambda self: str(_conv(self._d)).replace(\",\", \"\")\n\n\ndef _argm(f, big):\n    best = 0\n    for i in range(len(f)):\n        if (f[i] > f[best]) if big else (f[i] < f[best]):\n            best = i\n    return best\n\n\ndef array(x, dtype=None):\n    d = _conv(x)\n    if dtype is not None:\n        d = _map(d, dtype)\n    return ndarray(d)\n\n\nasarray = array\n\n\ndef zeros(shape):\n    if isinstance(shape, int):\n        shape = (shape,)\n    return full(shape, 0.0)\n\n\ndef ones(shape):\n    if isinstance(shape, int):\n        shape = (shape,)\n    return full(shape, 1.0)\n\n\ndef full(shape, v):\n    if isinstance(shape, int):\n        shape = (shape,)\n    if len(shape) == 1:\n        return ndarray([v] * shape[0])\n    return ndarray([full(shape[1:], v)._d for _ in range(shape[0])])\n\n\ndef eye(n):\n    return ndarray([[1.0 if i == j else 0.0 for j in range(n)] for i in range(n)])\n\n\ndef arange(a, b=None, step=1):\n    if b is None:\n        a, b = 0, a\n    out = []\n    x = a\n    while (x < b) if step > 0 else (x > b):\n        out.append(x)\n        x += step\n    return ndarray(out)\n\n\ndef linspace(a, b, n=50):\n    if n == 1:\n        return ndarray([float(a)])\n    return ndarray([a + (b - a) * i / (n - 1.0) for i in range(n)])\n\n\ndef _reduce(x, axis, f):\n    d = _data(x)\n    if axis is None or not isinstance(d[0], list):\n        return f(_flat(d))\n    if axis == 0:\n        return ndarray([f(list(c)) for c in zip(*d)])\n    return ndarray([f(r) for r in d])\n\n\ndef sum(x, axis=None):\n    return _reduce(x, axis, _sum)\n\n\ndef _sum(v):\n    t = 0\n    for a in v:\n        t += a\n    return t\n\n\ndef mean(x, axis=None):\n    return _reduce(x, axis, lambda v: _sum(v) / float(len(v)))\n\n\ndef max(x, axis=None):\n    return _reduce(x, axis, _maxl)\n\n\ndef min(x, axis=None):\n    return _reduce(x, axis, _minl)\n\n\ndef _maxl(v):\n    b = v[0]\n    for a in v:\n        if a > b:\n            b = a\n    return b\n\n\ndef _minl(v):\n    b = v[0]\n    for a in v:\n        if a < b:\n            b = a\n    return b\n\n\namax = max\namin = min\n\n\ndef std(x):\n    f = _flat(_data(x))\n    mu = _sum(f) / float(len(f))\n    return _m.sqrt(_sum([(a - mu) ** 2 for a in f]) / len(f))\n\n\ndef var(x):\n    return std(x) ** 2\n\n\ndef median(x):\n    f = sorted(_flat(_data(x)))\n    n = len(f)\n    return f[n // 2] if n % 2 else (f[n // 2 - 1] + f[n // 2]) / 2.0\n\n\ndef dot(a, b):\n    a, b = _data(a), _data(b)\n    if not isinstance(a[0], list) and not isinstance(b[0], list):\n        return _sum([x * y for x, y in zip(a, b)])\n    if not isinstance(a[0], list):\n        a = [a]\n        one = True\n    else:\n        one = False\n    bcols = list(zip(*b)) if isinstance(b[0], list) else [b]\n    res = [[_sum([x * y for x, y in zip(r, c)]) for c in bcols] for r in a]\n    if one:\n        res = res[0]\n    return ndarray(res)\n\n\nmatmul = dot\n\n\ndef transpose(x):\n    return array(x).T\n\n\ndef reshape(x, shape):\n    return array(x).reshape(shape)\n\n\ndef concatenate(arrs):\n    out = []\n    for a in arrs:\n        out.extend(_data(a))\n    return ndarray(out)\n\n\ndef _ufunc(f):\n    def g(x):\n        d = _data(x)\n        r = _map(d, f)\n        return ndarray(r) if isinstance(r, list) else r\n    return g\n\n\nsqrt = _ufunc(_m.sqrt)\nsin = _ufunc(_m.sin)\ncos = _ufunc(_m.cos)\ntan = _ufunc(_m.tan)\nexp = _ufunc(_m.exp)\nlog = _ufunc(_m.log)\nlog10 = _ufunc(_m.log10)\nfloor = _ufunc(_m.floor)\nceil = _ufunc(_m.ceil)\nabsolute = _ufunc(lambda a: -a if a < 0 else a)\nabs = absolute\n\n\ndef round(x, n=0):\n    return _ufunc(lambda a: _m.floor(a * 10 ** n + 0.5) / 10.0 ** n)(x)\n\n\ndef power(a, b):\n    return array(a) ** b\n\n\ndef sort(x):\n    d = _data(x)\n    return ndarray(sorted(d))\n\n\ndef unique(x):\n    return ndarray(sorted(set(_flat(_data(x)))))\n\n\ndef where(c, a, b):\n    return ndarray(_zip(_zip(_data(c), _data(a), lambda x, y: (x, y)), _data(b), lambda p, z: p[1] if p[0] else z))\n\n\ndef allclose(a, b):\n    return all(_flat(_zip(_data(a), _data(b), lambda x, y: [(x - y) < 1e-8 and (y - x) < 1e-8]) if False else [True]))\n\n\nclass _Random(object):\n    def rand(self, *shape):\n        if not shape:\n            return _r.random()\n        return ndarray(_nest(shape, _r.random))\n\n    def randn(self, *shape):\n        f = lambda: _r.gauss(0, 1)\n        return ndarray(_nest(shape, f)) if shape else f()\n\n    def randint(self, lo, hi=None, size=None):\n        if hi is None:\n            lo, hi = 0, lo\n        f = lambda: _r.randint(lo, hi - 1)\n        if size is None:\n            return f()\n        if isinstance(size, int):\n            size = (size,)\n        return ndarray(_nest(size, f))\n\n    def seed(self, s=None):\n        _r.seed(s)\n\n    def choice(self, a):\n        return _r.choice(list(_data(a)))\n\n    def shuffle(self, a):\n        _r.shuffle(a._d if isinstance(a, ndarray) else a)\n\n\ndef _nest(shape, f):\n    if len(shape) == 1:\n        return [f() for _ in range(shape[0])]\n    return [_nest(shape[1:], f) for _ in range(shape[0])]\n\n\nrandom = _Random()\n", "src/lib/pandas.py": "# pandas ساده‌شده (پایتون خالص): Series و DataFrame پایه\nimport numpy as _np\n\n\ndef _fmt(v):\n    if isinstance(v, float):\n        return (\"%.6g\" % v)\n    return str(v)\n\n\nclass Series(object):\n    def __init__(self, data, name=None, index=None):\n        if isinstance(data, _np.ndarray):\n            data = data.tolist()\n        self.values = list(data)\n        self.name = name\n        self.index = list(index) if index is not None else list(range(len(self.values)))\n\n    def __len__(self):\n        return len(self.values)\n\n    def __iter__(self):\n        return iter(self.values)\n\n    def __getitem__(self, i):\n        if isinstance(i, Series):\n            return Series([v for v, k in zip(self.values, i.values) if k], self.name, [x for x, k in zip(self.index, i.values) if k])\n        return self.values[i]\n\n    def _op(self, o, f):\n        ov = o.values if isinstance(o, Series) else [o] * len(self.values)\n        return Series([f(a, b) for a, b in zip(self.values, ov)], self.name, self.index)\n\n    def __add__(self, o): return self._op(o, lambda a, b: a + b)\n    def __sub__(self, o): return self._op(o, lambda a, b: a - b)\n    def __mul__(self, o): return self._op(o, lambda a, b: a * b)\n    def __truediv__(self, o): return self._op(o, lambda a, b: a / b)\n    def __gt__(self, o): return self._op(o, lambda a, b: a > b)\n    def __lt__(self, o): return self._op(o, lambda a, b: a < b)\n    def __ge__(self, o): return self._op(o, lambda a, b: a >= b)\n    def __le__(self, o): return self._op(o, lambda a, b: a <= b)\n    def __eq__(self, o): return self._op(o, lambda a, b: a == b)\n\n    def sum(self): return _np.sum(self.values)\n    def mean(self): return _np.mean(self.values)\n    def max(self): return _np.max(self.values)\n    def min(self): return _np.min(self.values)\n    def std(self): return _np.std(self.values)\n    def median(self): return _np.median(self.values)\n    def count(self): return len(self.values)\n    def tolist(self): return list(self.values)\n    def unique(self): return sorted(set(self.values))\n    def head(self, n=5): return Series(self.values[:n], self.name, self.index[:n])\n    def apply(self, f): return Series([f(v) for v in self.values], self.name, self.index)\n\n    def value_counts(self):\n        d = {}\n        for v in self.values:\n            d[v] = d.get(v, 0) + 1\n        ks = sorted(d, key=lambda k: -d[k])\n        return Series([d[k] for k in ks], self.name, ks)\n\n    def __repr__(self):\n        lines = [\"%s  %s\" % (i, _fmt(v)) for i, v in zip(self.index, self.values)]\n        lines.append(\"Name: %s, Length: %d\" % (self.name, len(self.values)))\n        return \"\\n\".join(lines)\n\n\nclass DataFrame(object):\n    def __init__(self, data=None, columns=None):\n        self._cols = {}\n        self.columns = []\n        if isinstance(data, dict):\n            for k in data:\n                self.columns.append(k)\n                self._cols[k] = list(data[k])\n        elif data is not None:\n            cs = columns or list(range(len(data[0])))\n            for j in range(len(cs)):\n                self.columns.append(cs[j])\n                self._cols[cs[j]] = [r[j] for r in data]\n        self.index = list(range(len(self)))\n\n    def __len__(self):\n        if not self.columns:\n            return 0\n        return len(self._cols[self.columns[0]])\n\n    @property\n    def shape(self):\n        return (len(self), len(self.columns))\n\n    def __getitem__(self, k):\n        if isinstance(k, Series):\n            return self._rows([i for i, f in enumerate(k.values) if f])\n        if isinstance(k, list):\n            return DataFrame(dict((c, self._cols[c]) for c in k))\n        return Series(self._cols[k], k, self.index)\n\n    def __setitem__(self, k, v):\n        if isinstance(v, Series):\n            v = v.values\n        elif not isinstance(v, (list, tuple)):\n            v = [v] * len(self)\n        if k not in self._cols:\n            self.columns.append(k)\n        self._cols[k] = list(v)\n\n    def _rows(self, idx):\n        df = DataFrame(dict((c, [self._cols[c][i] for i in idx]) for c in self.columns))\n        df.index = [self.index[i] for i in idx]\n        return df\n\n    def head(self, n=5):\n        return self._rows(list(range(min(n, len(self)))))\n\n    def tail(self, n=5):\n        return self._rows(list(range(max(0, len(self) - n), len(self))))\n\n    def sort_values(self, by, ascending=True):\n        idx = sorted(range(len(self)), key=lambda i: self._cols[by][i], reverse=not ascending)\n        return self._rows(idx)\n\n    def mean(self):\n        return Series([_np.mean(self._cols[c]) for c in self.columns if _num(self._cols[c])], None, [c for c in self.columns if _num(self._cols[c])])\n\n    def sum(self):\n        return Series([_np.sum(self._cols[c]) for c in self.columns if _num(self._cols[c])], None, [c for c in self.columns if _num(self._cols[c])])\n\n    def describe(self):\n        cs = [c for c in self.columns if _num(self._cols[c])]\n        rows = [[\"count\"], [\"mean\"], [\"std\"], [\"min\"], [\"max\"]]\n        for c in cs:\n            v = self._cols[c]\n            rows[0].append(len(v)); rows[1].append(_np.mean(v)); rows[2].append(_np.std(v)); rows[3].append(_np.min(v)); rows[4].append(_np.max(v))\n        d = DataFrame(dict((c, [r[i + 1] for r in rows]) for i, c in enumerate(cs)))\n        d.index = [\"count\", \"mean\", \"std\", \"min\", \"max\"]\n        return d\n\n    def iterrows(self):\n        for i in range(len(self)):\n            yield self.index[i], dict((c, self._cols[c][i]) for c in self.columns)\n\n    def to_dict(self):\n        return dict((c, list(self._cols[c])) for c in self.columns)\n\n    def __repr__(self):\n        cells = [[str(c) for c in self.columns]]\n        for i in range(len(self)):\n            cells.append([_fmt(self._cols[c][i]) for c in self.columns])\n        w = [max([len(r[j]) for r in cells]) for j in range(len(self.columns))]\n        iw = max([len(str(x)) for x in self.index] + [1])\n        out = []\n        for n, r in enumerate(cells):\n            lab = \"\" if n == 0 else str(self.index[n - 1])\n            out.append(lab.rjust(iw) + \"  \" + \"  \".join(r[j].rjust(w[j]) for j in range(len(r))))\n        return \"\\n\".join(out)\n\n\ndef _num(v):\n    for a in v:\n        if not isinstance(a, (int, float)):\n            return False\n    return True\n\n\ndef read_csv(*a, **k):\n    raise NotImplementedError(\"خواندن فایل در این موتور نیست؛ داده را مستقیم در DataFrame بگذارید\")\n", "src/lib/kivy/__init__.py": "# kivy ساده‌شده\n__version__ = '2.x-simple'\ndef require(v):\n    pass\n", "src/lib/kivy/_core.py": "# هسته‌ی kivy ساده‌شده بالای کتابخانه‌ی رابط (pfgui)\nimport pfgui\n\n\nclass Widget(object):\n    def __init__(self, **kw):\n        self.children = []\n        self._id = None\n        self._cb = {}\n        self._text = \"\"\n        for k in kw:\n            if k.startswith(\"on_\"):\n                self._cb[k] = kw[k]\n            elif k == \"text\":\n                self._text = str(kw[k])\n            else:\n                setattr(self, k, kw[k])\n\n    def bind(self, **kw):\n        for k in kw:\n            self._cb[k] = kw[k]\n\n    def add_widget(self, w):\n        self.children.append(w)\n\n    def remove_widget(self, w):\n        if w in self.children:\n            self.children.remove(w)\n\n    def _fire(self, name):\n        f = self._cb.get(name)\n        if f is not None:\n            f(self)\n\n    def _get_text(self):\n        if self._id is not None and self._kind in (\"entry\", \"text\"):\n            return pfgui.get(self._id)\n        return self._text\n\n    def _set_text(self, v):\n        self._text = str(v)\n        if self._id is not None:\n            pfgui.set(self._id, self._text)\n\n    text = property(_get_text, _set_text)\n    _kind = \"widget\"\n\n    def _make(self):\n        return None\n\n    def _render(self, same_row):\n        if not same_row:\n            pfgui.row()\n        self._id = self._make()\n\n\nclass Label(Widget):\n    _kind = \"label\"\n\n    def _make(self):\n        return pfgui.label(self._text)\n\n\nclass Button(Widget):\n    _kind = \"button\"\n\n    def _make(self):\n        me = self\n\n        def go():\n            me._fire(\"on_press\")\n            me._fire(\"on_release\")\n        return pfgui.button(self._text, go)\n\n\nclass TextInput(Widget):\n    _kind = \"entry\"\n\n    def _make(self):\n        if getattr(self, \"multiline\", False):\n            self._kind = \"text\"\n            i = pfgui.textarea(\"\")\n        else:\n            i = pfgui.entry(\"\")\n        if self._text:\n            pfgui.set(i, self._text)\n        return i\n\n\nclass CheckBox(Widget):\n    _kind = \"check\"\n\n    def _make(self):\n        return pfgui.checkbox(self._text)\n\n    def _get_active(self):\n        return bool(pfgui.get(self._id)) if self._id is not None else False\n\n    def _set_active(self, v):\n        if self._id is not None:\n            pfgui.set(self._id, bool(v))\n\n    active = property(_get_active, _set_active)\n\n\nclass Layout(Widget):\n    def _render(self, same_row):\n        horiz = getattr(self, \"orientation\", \"vertical\") == \"horizontal\"\n        cols = getattr(self, \"cols\", None)\n        first = True\n        n = 0\n        for c in self.children:\n            if cols:\n                c._render(n % cols != 0 or (first and same_row))\n                n += 1\n            elif horiz:\n                c._render(not first or same_row)\n            else:\n                c._render(False)\n            first = False\n\n\nclass BoxLayout(Layout):\n    pass\n\n\nclass GridLayout(Layout):\n    pass\n\n\nclass FloatLayout(Layout):\n    pass\n\n\nclass App(object):\n    title = \"برنامه\"\n\n    def __init__(self, **kw):\n        pass\n\n    def build(self):\n        return Label(text=\"\")\n\n    def run(self):\n        pfgui.clear_all()\n        pfgui.window(self.title)\n        root = self.build()\n        if root is not None:\n            root._render(False)\n        self.root = root\n        on = getattr(self, \"on_start\", None)\n        if on is not None:\n            on()\n\n    def stop(self):\n        pfgui.clear_all()\n", "src/lib/kivy/app.py": "from kivy._core import App\n", "src/lib/kivy/lang.py": "class Builder(object):\n    @staticmethod\n    def load_string(s):\n        raise NotImplementedError('زبان kv در نسخه‌ی ساده‌شده نیست؛ ابزارها را با کد بسازید')\n", "src/lib/kivy/core/__init__.py": "", "src/lib/kivy/core/window.py": "class _W(object):\n    size = (360, 640)\n    clearcolor = (0, 0, 0, 1)\nWindow = _W()\n", "src/lib/kivy/uix/__init__.py": "", "src/lib/kivy/uix/label.py": "from kivy._core import Label\n", "src/lib/kivy/uix/button.py": "from kivy._core import Button\n", "src/lib/kivy/uix/textinput.py": "from kivy._core import TextInput\n", "src/lib/kivy/uix/checkbox.py": "from kivy._core import CheckBox\n", "src/lib/kivy/uix/boxlayout.py": "from kivy._core import BoxLayout\n", "src/lib/kivy/uix/gridlayout.py": "from kivy._core import GridLayout\n", "src/lib/kivy/uix/floatlayout.py": "from kivy._core import FloatLayout\n", "src/lib/kivy/uix/widget.py": "from kivy._core import Widget\n", "src/lib/tkinter.py": "# tkinter ساده‌شده برای پایتون دری: بالای کتابخانه‌ی رابط (pfgui) ساخته شده است.\nimport pfgui\n\nEND = \"end\"\nLEFT = \"left\"\nRIGHT = \"right\"\nTOP = \"top\"\nBOTTOM = \"bottom\"\nBOTH = \"both\"\nX = \"x\"\nY = \"y\"\nW = \"w\"\nE = \"e\"\nN = \"n\"\nS = \"s\"\nNORMAL = \"normal\"\nDISABLED = \"disabled\"\nINSERT = \"insert\"\n\n_state = {\"row\": None}\n\n\nclass _Var(object):\n    def __init__(self, master=None, value=None):\n        self._v = value\n        self._widgets = []\n\n    def get(self):\n        for w in self._widgets:\n            if w._id is not None and w._kind == \"entry\":\n                return pfgui.get(w._id)\n            if w._id is not None and w._kind == \"check\":\n                return 1 if pfgui.get(w._id) else 0\n        return self._v\n\n    def set(self, value):\n        self._v = value\n        for w in self._widgets:\n            w._show(value)\n\n\nclass StringVar(_Var):\n    def __init__(self, master=None, value=\"\"):\n        _Var.__init__(self, master, value)\n\n\nclass IntVar(_Var):\n    def __init__(self, master=None, value=0):\n        _Var.__init__(self, master, value)\n\n\nclass DoubleVar(_Var):\n    def __init__(self, master=None, value=0.0):\n        _Var.__init__(self, master, value)\n\n\nclass BooleanVar(_Var):\n    def __init__(self, master=None, value=False):\n        _Var.__init__(self, master, value)\n\n\nclass _Widget(object):\n    _kind = \"label\"\n\n    def __init__(self, master=None, **kw):\n        self._kw = dict(kw)\n        self._id = None\n        var = kw.get(\"textvariable\")\n        if var is None:\n            var = kw.get(\"variable\")\n        if var is not None:\n            var._widgets.append(self)\n\n    def _make(self):\n        return None\n\n    def _bound(self):\n        v = self._kw.get(\"textvariable\")\n        if v is None:\n            v = self._kw.get(\"variable\")\n        return v\n\n    def _place(self, new_row):\n        if self._id is not None:\n            return\n        if new_row:\n            pfgui.row()\n        self._id = self._make()\n        v = self._bound()\n        if v is not None and self._kind != \"check\":\n            self._show(v._v)\n\n    def pack(self, **kw):\n        self._place(True)\n\n    def grid(self, row=0, column=0, **kw):\n        new = _state[\"row\"] != row\n        _state[\"row\"] = row\n        self._place(new)\n\n    def place(self, **kw):\n        self._place(True)\n\n    def config(self, **kw):\n        self._kw.update(kw)\n        if self._id is not None and \"text\" in kw:\n            pfgui.set(self._id, str(kw[\"text\"]))\n\n    configure = config\n\n    def cget(self, key):\n        return self._kw.get(key)\n\n    def _show(self, value):\n        if self._id is not None and self._kind != \"check\":\n            pfgui.set(self._id, str(value))\n\n    def destroy(self):\n        pass\n\n\nclass Label(_Widget):\n    def _make(self):\n        return pfgui.label(str(self._kw.get(\"text\", \"\")))\n\n\nclass Button(_Widget):\n    _kind = \"button\"\n\n    def _make(self):\n        cmd = self._kw.get(\"command\")\n        if cmd is None:\n            cmd = _noop\n        return pfgui.button(str(self._kw.get(\"text\", \"\")), cmd)\n\n    def invoke(self):\n        cmd = self._kw.get(\"command\")\n        if cmd is not None:\n            cmd()\n\n\nclass Entry(_Widget):\n    _kind = \"entry\"\n\n    def _make(self):\n        return pfgui.entry(\"\")\n\n    def get(self):\n        return pfgui.get(self._id) if self._id is not None else \"\"\n\n    def delete(self, first=0, last=None):\n        if self._id is not None:\n            pfgui.set(self._id, \"\")\n\n    def insert(self, index, text):\n        if self._id is None:\n            return\n        old = pfgui.get(self._id)\n        if index == 0 or index == \"0\":\n            pfgui.set(self._id, str(text) + old)\n        else:\n            pfgui.set(self._id, old + str(text))\n\n\nclass Text(_Widget):\n    _kind = \"text\"\n\n    def _make(self):\n        return pfgui.textarea(\"\")\n\n    def get(self, first=\"1.0\", last=\"end\"):\n        return pfgui.get(self._id) if self._id is not None else \"\"\n\n    def insert(self, index, text):\n        if self._id is not None:\n            old = pfgui.get(self._id)\n            if index == \"1.0\":\n                pfgui.set(self._id, str(text) + old)\n            else:\n                pfgui.set(self._id, old + str(text))\n\n    def delete(self, first=\"1.0\", last=\"end\"):\n        if self._id is not None:\n            pfgui.set(self._id, \"\")\n\n\nclass Checkbutton(_Widget):\n    _kind = \"check\"\n\n    def _make(self):\n        i = pfgui.checkbox(str(self._kw.get(\"text\", \"\")))\n        v = self._bound()\n        if v is not None and v._v:\n            pfgui.set(i, True)\n        return i\n\n\nclass Frame(_Widget):\n    def _place(self, new_row):\n        pass\n\n\nLabelFrame = Frame\n\n\nclass Tk(object):\n    def __init__(self, *a, **k):\n        pass\n\n    def title(self, text=\"\"):\n        pfgui.window(str(text))\n\n    def geometry(self, *a):\n        pass\n\n    def resizable(self, *a):\n        pass\n\n    def minsize(self, *a):\n        pass\n\n    def configure(self, **k):\n        pass\n\n    config = configure\n\n    def mainloop(self, n=0):\n        pass\n\n    def update(self):\n        pass\n\n    def destroy(self):\n        pfgui.clear_all()\n\n    quit = destroy\n\n    def after(self, ms, func=None, *args):\n        raise NotImplementedError(\"after در tkinter ساده‌شده نیست\")\n\n\ndef _noop():\n    pass\n\n\nclass _MessageBox(object):\n    def showinfo(self, title=\"\", message=\"\", **k):\n        pfgui.message(str(message))\n\n    showwarning = showinfo\n    showerror = showinfo\n\n    def askyesno(self, title=\"\", message=\"\", **k):\n        pfgui.message(str(message))\n        return True\n\n\nmessagebox = _MessageBox()\n", "src/lib/statistics.py": "import math as _m\n\n\ndef mean(d):\n    d = list(d)\n    return sum(d) / float(len(d))\n\n\nfmean = mean\n\n\ndef median(d):\n    d = sorted(d)\n    n = len(d)\n    return d[n // 2] if n % 2 else (d[n // 2 - 1] + d[n // 2]) / 2.0\n\n\ndef median_low(d):\n    d = sorted(d)\n    return d[(len(d) - 1) // 2]\n\n\ndef median_high(d):\n    d = sorted(d)\n    return d[len(d) // 2]\n\n\ndef mode(d):\n    c = {}\n    for x in d:\n        c[x] = c.get(x, 0) + 1\n    best = None\n    for k in c:\n        if best is None or c[k] > c[best]:\n            best = k\n    return best\n\n\ndef multimode(d):\n    c = {}\n    for x in d:\n        c[x] = c.get(x, 0) + 1\n    m = max(c.values())\n    return [k for k in c if c[k] == m]\n\n\ndef pvariance(d):\n    d = list(d)\n    mu = mean(d)\n    return sum([(x - mu) ** 2 for x in d]) / float(len(d))\n\n\ndef variance(d):\n    d = list(d)\n    mu = mean(d)\n    return sum([(x - mu) ** 2 for x in d]) / float(len(d) - 1)\n\n\ndef pstdev(d):\n    return _m.sqrt(pvariance(d))\n\n\ndef stdev(d):\n    return _m.sqrt(variance(d))\n\n\ndef harmonic_mean(d):\n    d = list(d)\n    return len(d) / sum([1.0 / x for x in d])\n\n\ndef geometric_mean(d):\n    d = list(d)\n    return _m.exp(sum([_m.log(x) for x in d]) / len(d))\n", "src/lib/fractions.py": "def _gcd(a, b):\n    while b:\n        a, b = b, a % b\n    return abs(a)\n\n\nclass Fraction(object):\n    def __init__(self, n=0, d=1):\n        if isinstance(n, str):\n            if \"/\" in n:\n                a, b = n.split(\"/\")\n                n, d = int(a), int(b)\n            elif \".\" in n:\n                dec = len(n.split(\".\")[1])\n                n, d = int(n.replace(\".\", \"\")), 10 ** dec\n            else:\n                n = int(n)\n        elif isinstance(n, float):\n            dec = 1\n            while n * dec != int(n * dec) and dec < 10 ** 12:\n                dec *= 10\n            n, d = int(round(n * dec)), dec * d\n        elif isinstance(n, Fraction):\n            n, d = n.numerator, n.denominator\n        if d == 0:\n            raise ZeroDivisionError(\"مخرج صفر است\")\n        g = _gcd(n, d)\n        if d < 0:\n            g = -g\n        self.numerator = n // g\n        self.denominator = d // g\n\n    def _c(self, o):\n        return o if isinstance(o, Fraction) else Fraction(o)\n\n    def __add__(self, o):\n        o = self._c(o)\n        return Fraction(self.numerator * o.denominator + o.numerator * self.denominator, self.denominator * o.denominator)\n\n    __radd__ = __add__\n\n    def __sub__(self, o):\n        o = self._c(o)\n        return Fraction(self.numerator * o.denominator - o.numerator * self.denominator, self.denominator * o.denominator)\n\n    def __rsub__(self, o):\n        return self._c(o) - self\n\n    def __mul__(self, o):\n        o = self._c(o)\n        return Fraction(self.numerator * o.numerator, self.denominator * o.denominator)\n\n    __rmul__ = __mul__\n\n    def __truediv__(self, o):\n        o = self._c(o)\n        return Fraction(self.numerator * o.denominator, self.denominator * o.numerator)\n\n    def __rtruediv__(self, o):\n        return self._c(o) / self\n\n    def __neg__(self):\n        return Fraction(-self.numerator, self.denominator)\n\n    def __float__(self):\n        return self.numerator / float(self.denominator)\n\n    def _cmp(self, o):\n        o = self._c(o)\n        return self.numerator * o.denominator - o.numerator * self.denominator\n\n    def __eq__(self, o):\n        return self._cmp(o) == 0\n\n    def __lt__(self, o): return self._cmp(o) < 0\n    def __le__(self, o): return self._cmp(o) <= 0\n    def __gt__(self, o): return self._cmp(o) > 0\n    def __ge__(self, o): return self._cmp(o) >= 0\n\n    def __str__(self):\n        return str(self.numerator) if self.denominator == 1 else \"%d/%d\" % (self.numerator, self.denominator)\n\n    def __repr__(self):\n        return \"Fraction(%d, %d)\" % (self.numerator, self.denominator)\n", "src/lib/bisect.py": "def bisect_left(a, x, lo=0, hi=None):\n    if hi is None:\n        hi = len(a)\n    while lo < hi:\n        mid = (lo + hi) // 2\n        if a[mid] < x:\n            lo = mid + 1\n        else:\n            hi = mid\n    return lo\n\n\ndef bisect_right(a, x, lo=0, hi=None):\n    if hi is None:\n        hi = len(a)\n    while lo < hi:\n        mid = (lo + hi) // 2\n        if x < a[mid]:\n            hi = mid\n        else:\n            lo = mid + 1\n    return lo\n\n\nbisect = bisect_right\n\n\ndef insort_left(a, x):\n    a.insert(bisect_left(a, x), x)\n\n\ndef insort_right(a, x):\n    a.insert(bisect_right(a, x), x)\n\n\ninsort = insort_right\n", "src/lib/typing.py": "class _Any(object):\n    def __getitem__(self, k):\n        return self\n\n    def __call__(self, *a, **k):\n        return a[0] if a else None\n\n\nAny = _Any()\nList = Dict = Set = Tuple = Optional = Union = Callable = Iterable = Iterator = Sequence = Mapping = Type = FrozenSet = Generator = Awaitable = _Any()\nText = str\n\n\ndef TypeVar(name, *a, **k):\n    return _Any()\n\n\ndef cast(t, v):\n    return v\n\n\ndef NamedTuple(name, fields):\n    raise NotImplementedError(\"NamedTuple در نسخه‌ی مرورگری نیست\")\n\n\nclass Generic(object):\n    pass\n\n\nclass Protocol(object):\n    pass\n\n\nTYPE_CHECKING = False\n", "src/lib/abc.py": "class ABC(object):\n    pass\n\n\nclass ABCMeta(type):\n    pass\n\n\ndef abstractmethod(f):\n    return f\n\n\nabstractproperty = property\n", "src/lib/textwrap.py": "def wrap(text, width=70):\n    lines, cur = [], \"\"\n    for w in text.split():\n        if cur and len(cur) + 1 + len(w) > width:\n            lines.append(cur)\n            cur = w\n        else:\n            cur = (cur + \" \" + w) if cur else w\n    if cur:\n        lines.append(cur)\n    return lines\n\n\ndef fill(text, width=70):\n    return \"\\n\".join(wrap(text, width))\n\n\ndef shorten(text, width, placeholder=\" [...]\"):\n    t = \" \".join(text.split())\n    if len(t) <= width:\n        return t\n    cut = t[:max(0, width - len(placeholder))]\n    if \" \" in cut:\n        cut = cut.rsplit(\" \", 1)[0]\n    return cut + placeholder\n\n\ndef indent(text, prefix):\n    return \"\\n\".join([(prefix + l) if l.strip() else l for l in text.split(\"\\n\")])\n\n\ndef dedent(text):\n    ls = text.split(\"\\n\")\n    m = None\n    for l in ls:\n        if l.strip():\n            n = len(l) - len(l.lstrip())\n            m = n if m is None or n < m else m\n    m = m or 0\n    return \"\\n\".join([l[m:] for l in ls])\n", "src/lib/uuid.py": "import random as _r\n\n\nclass UUID(object):\n    def __init__(self, hex):\n        self.hex = hex.replace(\"-\", \"\")\n\n    def __str__(self):\n        h = self.hex\n        return h[:8] + \"-\" + h[8:12] + \"-\" + h[12:16] + \"-\" + h[16:20] + \"-\" + h[20:]\n\n    def __repr__(self):\n        return \"UUID('%s')\" % str(self)\n\n    def __eq__(self, o):\n        return isinstance(o, UUID) and o.hex == self.hex\n\n    @property\n    def int(self):\n        return int(self.hex, 16)\n\n\ndef uuid4():\n    h = \"\".join([\"0123456789abcdef\"[_r.randint(0, 15)] for _ in range(32)])\n    h = h[:12] + \"4\" + h[13:16] + \"89ab\"[_r.randint(0, 3)] + h[17:]\n    return UUID(h)\n", "src/lib/secrets.py": "import random as _r\n\n\ndef token_hex(n=16):\n    return \"\".join([\"0123456789abcdef\"[_r.randint(0, 15)] for _ in range(n * 2)])\n\n\ndef randbelow(n):\n    return _r.randint(0, n - 1)\n\n\ndef choice(seq):\n    return _r.choice(seq)\n\n\ndef token_urlsafe(n=16):\n    a = \"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_\"\n    return \"\".join([a[_r.randint(0, 63)] for _ in range(int(n * 1.3) + 1)])\n", "src/lib/colorsys.py": "def rgb_to_hsv(r, g, b):\n    mx, mn = max(r, g, b), min(r, g, b)\n    v = mx\n    if mn == mx:\n        return 0.0, 0.0, v\n    s = (mx - mn) / mx\n    d = mx - mn\n    rc, gc, bc = (mx - r) / d, (mx - g) / d, (mx - b) / d\n    h = bc - gc if r == mx else (2.0 + rc - bc if g == mx else 4.0 + gc - rc)\n    return (h / 6.0) % 1.0, s, v\n\n\ndef hsv_to_rgb(h, s, v):\n    if s == 0.0:\n        return v, v, v\n    i = int(h * 6.0)\n    f = h * 6.0 - i\n    p, q, t = v * (1.0 - s), v * (1.0 - s * f), v * (1.0 - s * (1.0 - f))\n    i = i % 6\n    return [(v, t, p), (q, v, p), (p, v, t), (p, q, v), (t, p, v), (v, p, q)][i]\n", "src/lib/io.py": "class StringIO(object):\n    def __init__(self, initial=\"\"):\n        self._b = initial\n        self._p = 0\n\n    def write(self, s):\n        self._b += s\n        return len(s)\n\n    def getvalue(self):\n        return self._b\n\n    def read(self, n=-1):\n        r = self._b[self._p:] if n < 0 else self._b[self._p:self._p + n]\n        self._p += len(r)\n        return r\n\n    def readline(self):\n        i = self._b.find(\"\\n\", self._p)\n        e = len(self._b) if i < 0 else i + 1\n        r = self._b[self._p:e]\n        self._p = e\n        return r\n\n    def readlines(self):\n        out = []\n        while True:\n            l = self.readline()\n            if not l:\n                return out\n            out.append(l)\n\n    def __iter__(self):\n        return iter(self.readlines())\n\n    def seek(self, p, w=0):\n        self._p = p\n\n    def tell(self):\n        return self._p\n\n    def close(self):\n        pass\n\n    def __enter__(self):\n        return self\n\n    def __exit__(self, *a):\n        return False\n\n\nBytesIO = StringIO\n", "src/lib/queue.py": "class Empty(Exception):\n    pass\n\n\nclass Full(Exception):\n    pass\n\n\nclass Queue(object):\n    def __init__(self, maxsize=0):\n        self._q = []\n        self.maxsize = maxsize\n\n    def put(self, x, block=True, timeout=None):\n        if self.maxsize and len(self._q) >= self.maxsize:\n            raise Full()\n        self._q.append(x)\n\n    put_nowait = put\n\n    def get(self, block=True, timeout=None):\n        if not self._q:\n            raise Empty()\n        return self._q.pop(0)\n\n    get_nowait = get\n\n    def qsize(self):\n        return len(self._q)\n\n    def empty(self):\n        return not self._q\n\n    def full(self):\n        return bool(self.maxsize) and len(self._q) >= self.maxsize\n\n    def task_done(self):\n        pass\n\n\nclass LifoQueue(Queue):\n    def get(self, block=True, timeout=None):\n        if not self._q:\n            raise Empty()\n        return self._q.pop()\n\n\nclass PriorityQueue(Queue):\n    def put(self, x, block=True, timeout=None):\n        Queue.put(self, x)\n        self._q.sort()\n", "src/lib/contextlib.py": "class _GC(object):\n    def __init__(self, gen):\n        self._g = gen\n\n    def __enter__(self):\n        return next(self._g)\n\n    def __exit__(self, t, v, tb):\n        try:\n            next(self._g)\n        except StopIteration:\n            pass\n        return False\n\n\ndef contextmanager(f):\n    def w(*a, **k):\n        return _GC(f(*a, **k))\n    return w\n\n\nclass suppress(object):\n    def __init__(self, *ex):\n        self.ex = ex\n\n    def __enter__(self):\n        return self\n\n    def __exit__(self, t, v, tb):\n        return t is not None and issubclass(t, self.ex)\n\n\nclass closing(object):\n    def __init__(self, o):\n        self.o = o\n\n    def __enter__(self):\n        return self.o\n\n    def __exit__(self, *a):\n        self.o.close()\n        return False\n", "src/lib/warnings.py": "def warn(message, category=None, stacklevel=1):\n    print(\"هشدار:\", message)\n\n\ndef simplefilter(*a, **k):\n    pass\n\n\nfilterwarnings = simplefilter\n", "src/lib/logging.py": "import time as _t\nDEBUG, INFO, WARNING, ERROR, CRITICAL = 10, 20, 30, 40, 50\n_NAMES = {10: \"DEBUG\", 20: \"INFO\", 30: \"WARNING\", 40: \"ERROR\", 50: \"CRITICAL\"}\n_cfg = {\"level\": 30, \"format\": \"%(levelname)s:%(name)s:%(message)s\"}\n\n\ndef basicConfig(level=30, format=None, **k):\n    _cfg[\"level\"] = level\n    if format:\n        _cfg[\"format\"] = format\n\n\nclass Logger(object):\n    def __init__(self, name=\"root\"):\n        self.name = name\n\n    def setLevel(self, l):\n        _cfg[\"level\"] = l\n\n    def log(self, lvl, msg, *args):\n        if lvl < _cfg[\"level\"]:\n            return\n        if args:\n            msg = msg % args\n        out = _cfg[\"format\"].replace(\"%(levelname)s\", _NAMES.get(lvl, str(lvl))).replace(\"%(name)s\", self.name).replace(\"%(message)s\", str(msg)).replace(\"%(asctime)s\", str(_t.time()))\n        print(out)\n\n    def debug(self, m, *a): self.log(10, m, *a)\n    def info(self, m, *a): self.log(20, m, *a)\n    def warning(self, m, *a): self.log(30, m, *a)\n    warn = warning\n    def error(self, m, *a): self.log(40, m, *a)\n    def critical(self, m, *a): self.log(50, m, *a)\n    def exception(self, m, *a): self.log(40, m, *a)\n\n\n_root = Logger()\n_loggers = {}\n\n\ndef getLogger(name=\"root\"):\n    if name not in _loggers:\n        _loggers[name] = Logger(name)\n    return _loggers[name]\n\n\ndef debug(m, *a): _root.debug(m, *a)\ndef info(m, *a): _root.info(m, *a)\ndef warning(m, *a): _root.warning(m, *a)\ndef error(m, *a): _root.error(m, *a)\ndef critical(m, *a): _root.critical(m, *a)\n", "src/lib/getpass.py": "def getuser():\n    return \"user\"\n\n\ndef getpass(prompt=\"Password: \"):\n    return input(prompt)\n", "src/lib/platform.py": "def system():\n    return \"Browser\"\n\n\ndef python_version():\n    return \"3.x (Skulpt)\"\n\n\ndef machine():\n    return \"wasm\"\n\n\ndef platform():\n    return \"Browser-Skulpt\"\n", "src/lib/hashlib.py": "_K = [0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5, 0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3, 0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174, 0xe49b69c1, 0xefbe4786, 0x0fc19dc6, 0x240ca1cc, 0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da, 0x983e5152, 0xa831c66d, 0xb00327c8, 0xbf597fc7, 0xc6e00bf3, 0xd5a79147, 0x06ca6351, 0x14292967, 0x27b70a85, 0x2e1b2138, 0x4d2c6dfc, 0x53380d13, 0x650a7354, 0x766a0abb, 0x81c2c92e, 0x92722c85, 0xa2bfe8a1, 0xa81a664b, 0xc24b8b70, 0xc76c51a3, 0xd192e819, 0xd6990624, 0xf40e3585, 0x106aa070, 0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f, 0x682e6ff3, 0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2]\n_M = 0xffffffff\n\n\ndef _rr(x, n):\n    return ((x >> n) | (x << (32 - n))) & _M\n\n\ndef _bytes(data):\n    if isinstance(data, str):\n        try:\n            data = data.encode(\"utf-8\")\n        except Exception:\n            pass\n    out = []\n    for c in data:\n        out.append(ord(c) & 255 if isinstance(c, str) else c & 255)\n    return out\n\n\nclass _Sha256(object):\n    def __init__(self, data=b\"\"):\n        self._d = []\n        self.update(data)\n\n    def update(self, data):\n        self._d.extend(_bytes(data))\n\n    def hexdigest(self):\n        m = list(self._d)\n        ln = len(m) * 8\n        m.append(0x80)\n        while len(m) % 64 != 56:\n            m.append(0)\n        for i in range(7, -1, -1):\n            m.append((ln >> (8 * i)) & 255)\n        h = [0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a, 0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19]\n        for off in range(0, len(m), 64):\n            w = [(m[off + 4 * i] << 24) | (m[off + 4 * i + 1] << 16) | (m[off + 4 * i + 2] << 8) | m[off + 4 * i + 3] for i in range(16)]\n            for i in range(16, 64):\n                s0 = _rr(w[i - 15], 7) ^ _rr(w[i - 15], 18) ^ (w[i - 15] >> 3)\n                s1 = _rr(w[i - 2], 17) ^ _rr(w[i - 2], 19) ^ (w[i - 2] >> 10)\n                w.append((w[i - 16] + s0 + w[i - 7] + s1) & _M)\n            a, b, c, d, e, f, g, hh = h\n            for i in range(64):\n                S1 = _rr(e, 6) ^ _rr(e, 11) ^ _rr(e, 25)\n                ch = (e & f) ^ ((~e & _M) & g)\n                t1 = (hh + S1 + ch + _K[i] + w[i]) & _M\n                S0 = _rr(a, 2) ^ _rr(a, 13) ^ _rr(a, 22)\n                mj = (a & b) ^ (a & c) ^ (b & c)\n                t2 = (S0 + mj) & _M\n                hh, g, f, e, d, c, b, a = g, f, e, (d + t1) & _M, c, b, a, (t1 + t2) & _M\n            h = [(x + y) & _M for x, y in zip(h, [a, b, c, d, e, f, g, hh])]\n        return \"\".join([\"%08x\" % x for x in h])\n\n\ndef sha256(data=b\"\"):\n    return _Sha256(data)\n", "src/lib/base64.py": "_A = \"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/\"\n\n\ndef _ints(data):\n    if isinstance(data, str):\n        try:\n            data = data.encode(\"utf-8\")\n        except Exception:\n            pass\n    return [ord(c) & 255 if isinstance(c, str) else c & 255 for c in data]\n\n\ndef b64encode(data):\n    b = _ints(data)\n    out = \"\"\n    for i in range(0, len(b), 3):\n        ch = b[i:i + 3]\n        n = (ch[0] << 16) | ((ch[1] if len(ch) > 1 else 0) << 8) | (ch[2] if len(ch) > 2 else 0)\n        out += _A[(n >> 18) & 63] + _A[(n >> 12) & 63] + (_A[(n >> 6) & 63] if len(ch) > 1 else \"=\") + (_A[n & 63] if len(ch) > 2 else \"=\")\n    return out\n\n\ndef b64decode(s):\n    if not isinstance(s, str):\n        s = \"\".join([chr(c) if isinstance(c, int) else c for c in s])\n    s = s.strip().replace(\"=\", \"\")\n    bits = 0\n    nb = 0\n    out = []\n    for c in s:\n        bits = (bits << 6) | _A.index(c)\n        nb += 6\n        if nb >= 8:\n            nb -= 8\n            out.append((bits >> nb) & 255)\n            bits &= (1 << nb) - 1\n    try:\n        return bytes(out).decode(\"utf-8\")\n    except Exception:\n        return \"\".join([chr(x) for x in out])\n", "src/lib/matplotlib/__init__.py": "# matplotlib ساده‌شده: نمودار SVG داخل پنجره‌ی خروجی\n__version__ = \"simple\"\n\n\ndef use(*a, **k):\n    pass\n", "src/lib/matplotlib/pyplot.py": "import pfgui\n\n_COL = [\"#1f77b4\", \"#ff7f0e\", \"#2ca02c\", \"#d62728\", \"#9467bd\", \"#8c564b\", \"#e377c2\", \"#17becf\"]\n_NAMED = {\"r\": \"#d62728\", \"g\": \"#2ca02c\", \"b\": \"#1f77b4\", \"k\": \"#000000\", \"y\": \"#e6b800\", \"m\": \"#c2185b\", \"c\": \"#17becf\", \"red\": \"#d62728\", \"green\": \"#2ca02c\", \"blue\": \"#1f77b4\", \"black\": \"#000000\", \"orange\": \"#ff7f0e\", \"purple\": \"#9467bd\"}\n\n\ndef _lst(x):\n    if hasattr(x, \"tolist\"):\n        return x.tolist()\n    return list(x)\n\n\ndef _esc(t):\n    return str(t).replace(\"&\", \"&amp;\").replace(\"<\", \"&lt;\").replace(\">\", \"&gt;\")\n\n\ndef _fmt(v):\n    return \"%g\" % (round(v, 6))\n\n\nclass Axes(object):\n    def __init__(self):\n        self.items = []\n        self.title = \"\"\n        self.xl = \"\"\n        self.yl = \"\"\n        self.grid_on = False\n        self.legend_on = False\n        self.xlim_v = None\n        self.ylim_v = None\n\n    def _color(self, c):\n        if c is None:\n            return _COL[len(self.items) % len(_COL)]\n        return _NAMED.get(c, c)\n\n    def plot(self, *a, **k):\n        a = list(a)\n        fmt = None\n        if a and isinstance(a[-1], str):\n            fmt = a.pop()\n        if len(a) == 1:\n            y = _lst(a[0])\n            x = list(range(len(y)))\n        else:\n            x, y = _lst(a[0]), _lst(a[1])\n        col = k.get(\"color\") or k.get(\"c\")\n        if fmt and not col:\n            for ch in fmt:\n                if ch in _NAMED:\n                    col = ch\n        self.items.append({\"t\": \"line\", \"x\": x, \"y\": y, \"c\": self._color(col), \"l\": k.get(\"label\"), \"m\": bool(fmt and (\"o\" in fmt or \"s\" in fmt)) or bool(k.get(\"marker\"))})\n\n    def scatter(self, x, y, s=None, c=None, label=None, **k):\n        self.items.append({\"t\": \"sc\", \"x\": _lst(x), \"y\": _lst(y), \"c\": self._color(c if isinstance(c, str) else k.get(\"color\")), \"l\": label})\n\n    def bar(self, x, h, color=None, label=None, **k):\n        x, h = _lst(x), _lst(h)\n        self.items.append({\"t\": \"bar\", \"x\": x, \"y\": h, \"c\": self._color(color), \"l\": label})\n\n    def hist(self, data, bins=10, color=None, label=None, **k):\n        d = _lst(data)\n        lo, hi = min(d), max(d)\n        w = (hi - lo) / float(bins) or 1.0\n        cnt = [0] * bins\n        for v in d:\n            i = int((v - lo) / w)\n            cnt[min(i, bins - 1)] += 1\n        xs = [lo + w * (i + 0.5) for i in range(bins)]\n        self.items.append({\"t\": \"bar\", \"x\": xs, \"y\": cnt, \"c\": self._color(color), \"l\": label, \"w\": w})\n\n    def set_title(self, t): self.title = t\n    def set_xlabel(self, t): self.xl = t\n    def set_ylabel(self, t): self.yl = t\n    def set_xlim(self, a, b): self.xlim_v = (a, b)\n    def set_ylim(self, a, b): self.ylim_v = (a, b)\n\n    def legend(self, *a, **k):\n        self.legend_on = True\n\n    def grid(self, on=True, **k):\n        self.grid_on = on\n\n    def svg(self, W=340, H=250):\n        L, R, T, B = 48, 14, 28, 40\n        xs = [];  ys = []\n        cat = False\n        for it in self.items:\n            for v in it[\"x\"]:\n                if isinstance(v, str):\n                    cat = True\n        for it in self.items:\n            if cat:\n                xs.extend(range(len(it[\"x\"])))\n            else:\n                xs.extend(it[\"x\"])\n            ys.extend(it[\"y\"])\n            if it[\"t\"] == \"bar\":\n                ys.append(0)\n        if not xs:\n            xs = [0, 1]\n            ys = [0, 1]\n        x0, x1, y0, y1 = min(xs), max(xs), min(ys), max(ys)\n        if any(it[\"t\"] == \"bar\" for it in self.items):\n            x0 -= 0.7\n            x1 += 0.7\n        if self.xlim_v:\n            x0, x1 = self.xlim_v\n        if self.ylim_v:\n            y0, y1 = self.ylim_v\n        if x1 == x0:\n            x1 = x0 + 1\n        if y1 == y0:\n            y1 = y0 + 1\n        pad = (y1 - y0) * 0.06\n        if not self.ylim_v:\n            y1 += pad\n            if y0 != 0:\n                y0 -= pad\n        pw, ph = W - L - R, H - T - B\n        fx = lambda v: L + (v - x0) / float(x1 - x0) * pw\n        fy = lambda v: T + ph - (v - y0) / float(y1 - y0) * ph\n        o = ['<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 %d %d\" width=\"%d\" height=\"%d\" font-family=\"sans-serif\" font-size=\"10\">' % (W, H, W, H), '<rect width=\"%d\" height=\"%d\" fill=\"#fff\"/>' % (W, H)]\n        for i in range(6):\n            gy = y0 + (y1 - y0) * i / 5.0\n            yy = fy(gy)\n            if self.grid_on:\n                o.append('<line x1=\"%d\" x2=\"%d\" y1=\"%g\" y2=\"%g\" stroke=\"#ddd\"/>' % (L, L + pw, yy, yy))\n            o.append('<text x=\"%d\" y=\"%g\" text-anchor=\"end\" fill=\"#333\">%s</text>' % (L - 4, yy + 3, _fmt(gy)))\n        if cat:\n            for i, lab in enumerate(self.items[0][\"x\"]):\n                o.append('<text x=\"%g\" y=\"%d\" text-anchor=\"middle\" fill=\"#333\">%s</text>' % (fx(i), T + ph + 14, _esc(lab)))\n        else:\n            for i in range(6):\n                gx = x0 + (x1 - x0) * i / 5.0\n                o.append('<text x=\"%g\" y=\"%d\" text-anchor=\"middle\" fill=\"#333\">%s</text>' % (fx(gx), T + ph + 14, _fmt(gx)))\n        o.append('<rect x=\"%d\" y=\"%d\" width=\"%d\" height=\"%d\" fill=\"none\" stroke=\"#333\"/>' % (L, T, pw, ph))\n        for it in self.items:\n            px = [fx(i) for i in range(len(it[\"x\"]))] if cat else [fx(v) for v in it[\"x\"]]\n            py = [fy(v) for v in it[\"y\"]]\n            if it[\"t\"] == \"line\":\n                o.append('<polyline fill=\"none\" stroke=\"%s\" stroke-width=\"2\" points=\"%s\"/>' % (it[\"c\"], \" \".join([\"%g,%g\" % (a, b) for a, b in zip(px, py)])))\n                if it[\"m\"]:\n                    for a, b in zip(px, py):\n                        o.append('<circle cx=\"%g\" cy=\"%g\" r=\"3\" fill=\"%s\"/>' % (a, b, it[\"c\"]))\n            elif it[\"t\"] == \"sc\":\n                for a, b in zip(px, py):\n                    o.append('<circle cx=\"%g\" cy=\"%g\" r=\"3.5\" fill=\"%s\" opacity=\"0.8\"/>' % (a, b, it[\"c\"]))\n            else:\n                bw = (it.get(\"w\", 0.8) if not cat else 0.8) / float(x1 - x0) * pw\n                base = fy(0)\n                for a, b in zip(px, py):\n                    o.append('<rect x=\"%g\" y=\"%g\" width=\"%g\" height=\"%g\" fill=\"%s\"/>' % (a - bw / 2, min(b, base), bw, abs(base - b), it[\"c\"]))\n        if self.title:\n            o.append('<text x=\"%d\" y=\"16\" text-anchor=\"middle\" font-size=\"13\" font-weight=\"bold\" fill=\"#111\">%s</text>' % (W // 2, _esc(self.title)))\n        if self.xl:\n            o.append('<text x=\"%d\" y=\"%d\" text-anchor=\"middle\" fill=\"#111\">%s</text>' % (L + pw // 2, H - 6, _esc(self.xl)))\n        if self.yl:\n            o.append('<text x=\"11\" y=\"%d\" text-anchor=\"middle\" fill=\"#111\" transform=\"rotate(-90 11 %d)\">%s</text>' % (T + ph // 2, T + ph // 2, _esc(self.yl)))\n        if self.legend_on:\n            yy = T + 12\n            for it in self.items:\n                if it[\"l\"]:\n                    o.append('<rect x=\"%d\" y=\"%d\" width=\"10\" height=\"10\" fill=\"%s\"/><text x=\"%d\" y=\"%d\" fill=\"#111\">%s</text>' % (L + 8, yy - 9, it[\"c\"], L + 22, yy, _esc(it[\"l\"])))\n                    yy += 14\n        o.append(\"</svg>\")\n        return \"\".join(o)\n\n\nclass Figure(object):\n    def __init__(self, axes):\n        self.axes = axes\n\n    def suptitle(self, t):\n        pass\n\n    def savefig(self, *a, **k):\n        pass\n\n\n_cur = [Axes()]\n_all = [_cur[0]]\n\n\ndef figure(*a, **k):\n    ax = Axes()\n    _cur[0] = ax\n    _all.append(ax)\n    return Figure([ax])\n\n\ndef subplots(nrows=1, ncols=1, **k):\n    axs = [Axes() for _ in range(nrows * ncols)]\n    for a in axs:\n        _all.append(a)\n    _cur[0] = axs[0]\n    return Figure(axs), (axs[0] if len(axs) == 1 else axs)\n\n\ndef gca():\n    return _cur[0]\n\n\ndef plot(*a, **k): _cur[0].plot(*a, **k)\ndef scatter(*a, **k): _cur[0].scatter(*a, **k)\ndef bar(*a, **k): _cur[0].bar(*a, **k)\ndef hist(*a, **k): _cur[0].hist(*a, **k)\ndef title(t, **k): _cur[0].set_title(t)\ndef xlabel(t, **k): _cur[0].set_xlabel(t)\ndef ylabel(t, **k): _cur[0].set_ylabel(t)\ndef xlim(a, b): _cur[0].set_xlim(a, b)\ndef ylim(a, b): _cur[0].set_ylim(a, b)\ndef legend(*a, **k): _cur[0].legend()\ndef grid(on=True, **k): _cur[0].grid(on)\ndef savefig(*a, **k): pass\ndef tight_layout(*a, **k): pass\ndef close(*a, **k): pass\n\n\ndef show(*a, **k):\n    for ax in _all:\n        if ax.items:\n            pfgui.row()\n            pfgui.svg(ax.svg())\n    del _all[:]\n    ax = Axes()\n    _all.append(ax)\n    _cur[0] = ax\n"};
+  var PRE = [], STUB = [], SIMPLE = [], shimsDone = false;
+  function injectShims() {
+    if (shimsDone) return;
+    try {
+      var F = Sk.builtinFiles.files;
+      var nativeHas = function (n) { return F["src/lib/" + n + ".py"] !== undefined || F["src/lib/" + n + ".js"] !== undefined || F["src/lib/" + n + "/__init__.py"] !== undefined; };
+      var tops = {};
+      Object.keys(SHIM_FILES).forEach(function (k) { var m = /^src\/lib\/([^\/.]+)/.exec(k); if (m) (tops[m[1]] = tops[m[1]] || []).push(k); });
+      Object.keys(tops).forEach(function (n) {
+        if (nativeHas(n)) return;
+        tops[n].forEach(function (k) { F[k] = SHIM_FILES[k]; });
+        SIMPLE.push(n); PRE.push(n);
+      });
+      var CORE = ["sys", "builtins", "time", "math", "os", "random", "re", "json", "string", "itertools", "collections", "functools", "operator", "copy", "datetime", "types", "turtle", "struct", "array", "keyword", "heapq", "pprint", "inspect", "numbers", "signal", "unittest", "threading", "asyncio", "token", "this", "document", "processing", "image", "pythonds", "webgl"];
+      var names = {};
+      CATALOG.forEach(function (e) { names[e[0]] = 1; });
+      THIRD.forEach(function (e) { names[e[0]] = 1; });
+      Object.keys(MOD_FA).forEach(function (k) { names[MOD_FA[k]] = 1; });
+      Object.keys(names).forEach(function (n) {
+        if (n === "pfgui" || n === "pfgame" || CORE.indexOf(n) >= 0 || nativeHas(n)) return;
+        F["src/lib/" + n + ".py"] = "__stub__ = True\n";
+        STUB.push(n); PRE.push(n);
+      });
+      shimsDone = true;
+    } catch (e) {}
+  }
+  function userModuleSource(name) {
+    var t = tabs.find(function (x) { return x.name === name + ".py"; });
+    if (t) return files[t.name];
+    return has(files, name + ".py") ? files[name + ".py"] : undefined;
+  }
+  function builtinRead(x) {
+    var m = /^(?:\.\/)?(\w+)(?:\/__init__)?\.py$/.exec(x);
+    if (m && !/^src\//.test(x)) { var src = userModuleSource(m[1]); if (src !== undefined) return translate(src, settings.persian); }
+    if (!Sk.builtinFiles || Sk.builtinFiles.files[x] === undefined) throw "File not found: '" + x + "'";
+    return Sk.builtinFiles.files[x];
+  }
+
+
+
+  /* ======================= حالت واقعی: CPython کامل با Pyodide ======================= */
+  var REAL = null, ALLOW_REAL = true;
+  var PYO_BASE = "https://cdn.jsdelivr.net/pyodide/v0.26.4/full/";
+  var REAL_NO = ["tkinter", "turtle", "curses", "multiprocessing", "venv", "ensurepip", "msvcrt", "winreg", "winsound", "pty", "termios", "tty", "syslog", "readline", "antigravity", "kivy", "torch", "tensorflow", "selenium", "redis", "moviepy", "yt_dlp", "uvicorn", "pygame", "PyQt5", "fcntl", "resource", "grp", "pwd"];
+  var NEED_PY = "import importlib.util as _u, micropip as _mp\n_PIP = {'bs4':'beautifulsoup4','PIL':'pillow','cv2':'opencv-python','sklearn':'scikit-learn','yaml':'pyyaml','arabic_reshaper':'arabic-reshaper','bidi':'python-bidi','telebot':'pyTelegramBotAPI'}\nfor _n in __NAMES__:\n    if _n in ('pfgui', 'pfgame', 'pfio'):\n        continue\n    if _u.find_spec(_n) is None:\n        try:\n            await _mp.install(_PIP.get(_n, _n))\n            print('نصب شد:', _n)\n        except Exception as _e:\n            print('نصب نشد:', _n)\n";
+  var MPL_PY = "import os\nos.environ['MPLBACKEND'] = 'AGG'\nimport matplotlib\nmatplotlib.use('AGG')\nimport matplotlib.pyplot as _plt, io as _io, base64 as _b64, pfio as _pfio\ndef _show(*a, **k):\n    for _n in _plt.get_fignums():\n        _f = _plt.figure(_n)\n        _b = _io.BytesIO()\n        _f.savefig(_b, format='png', dpi=110, bbox_inches='tight')\n        _pfio.image(_b64.b64encode(_b.getvalue()).decode())\n    _plt.close('all')\n_plt.show = _show\n";
+  function tryReal() {
+    if (!ALLOW_REAL) return Promise.reject(new Error("off"));
+    var probe = new Promise(function (res, rej) {
+      var timer = setTimeout(function () { rej(new Error("timeout")); }, 5000);
+      try { fetch(PYO_BASE + "pyodide-lock.json").then(function (r) { clearTimeout(timer); if (r.ok) res(); else rej(new Error("http")); }, function (e) { clearTimeout(timer); rej(e); }); } catch (e) { clearTimeout(timer); rej(e); }
+    });
+    var wasmOk = new Promise(function (res, rej) {
+      try { WebAssembly.instantiate(new Uint8Array([0, 97, 115, 109, 1, 0, 0, 0])).then(function () { res(); }, function (e) { rej(e); }); } catch (e) { rej(e); }
+    });
+    return Promise.all([probe, wasmOk]).then(function () { return loadScript(PYO_BASE + "pyodide.js"); })
+      .then(function () { if (!window.loadPyodide) throw new Error("none"); return Promise.race([window.loadPyodide({ indexURL: PYO_BASE }), new Promise(function (res, rej) { setTimeout(function () { rej(new Error("slow")); }, 150000); })]); })
+      .then(function (py) {
+        py.registerJsModule("pfio", {
+          ask: function (p) { var v = window.prompt(String(p) || "ورودی:"); if (v === null || v === undefined) v = ""; write(decodeNames(String(p)) + v + "\n"); return v; },
+          image: function (b64) {
+            var im = document.createElement("img"); im.src = "data:image/png;base64," + b64; im.style.cssText = "max-width:100%;height:auto;background:#fff";
+            var g = $("gui"); g.hidden = false; var r = document.createElement("div"); r.className = "grow"; r.appendChild(im); g.appendChild(r);
+          }
+        });
+        py.registerJsModule("pfgui", realGui());
+        py.registerJsModule("pfgame", realGame());
+        py.runPython("import sys, builtins, pfio\nsys.path.insert(0, '/home/pyodide')\nbuiltins.input = lambda p='': pfio.ask(str(p))\n");
+        return py.loadPackage("micropip").catch(function () {}).then(function () { REAL = py; });
+      });
+  }
+  function showPyError(e) {
+    var msg = String((e && e.message) || e), lines = msg.trim().split("\n"), last = lines[lines.length - 1] || msg, ln = 0, m, re = /File "<exec>", line (\d+)/g;
+    while ((m = re.exec(msg))) ln = +m[1];
+    showError({ toString: function () { return last + (ln ? " on line " + ln : ""); } });
+    if (ln) { badLine = ln; render(); }
+  }
+  function realGui() {
+    function row() { var r = document.createElement("div"); r.className = "grow"; $("gui").hidden = false; $("gui").appendChild(r); gui.cur = r; return r; }
+    function add(el) { if (!gui.cur || !gui.cur.isConnected) row(); gui.cur.appendChild(el); gui.items.push(el); return gui.items.length - 1; }
+    function item(i) { var el = gui.items[i]; if (!el) throw new Error("چنین ابزاری وجود ندارد"); return el; }
+    function field(el) { return el.querySelector("input,textarea") || el; }
+    function call(cb) { try { var r = cb(); if (r && typeof r.then === "function") r.then(null, showPyError); } catch (e) { showPyError(e); } }
+    return {
+      window: function (t) { $("gui").hidden = false; $("outTitle").textContent = String(t); },
+      label: function (t) { var e = document.createElement("span"); e.className = "gl"; e.textContent = String(t); return add(e); },
+      button: function (t, cb) { var e = document.createElement("button"); e.type = "button"; e.className = "btn primary"; e.textContent = String(t); e.addEventListener("click", function () { if (!stopped) call(cb); }); return add(e); },
+      entry: function (ph) { var e = document.createElement("input"); e.type = "text"; e.placeholder = ph ? String(ph) : ""; e.dir = "auto"; return add(e); },
+      textarea: function (ph) { var e = document.createElement("textarea"); e.placeholder = ph ? String(ph) : ""; e.dir = "auto"; return add(e); },
+      checkbox: function (t) { var l = document.createElement("label"), c = document.createElement("input"); c.type = "checkbox"; l.appendChild(c); l.appendChild(document.createTextNode(String(t))); return add(l); },
+      row: function () { row(); },
+      get: function (id) { var f = field(item(id)); return f.type === "checkbox" ? !!f.checked : (f.value !== undefined && f.tagName !== "SPAN" ? f.value : f.textContent); },
+      set: function (id, v) { var f = field(item(id)); if (f.type === "checkbox") f.checked = !!v; else if (f.tagName === "INPUT" || f.tagName === "TEXTAREA") f.value = String(v); else f.textContent = String(v); },
+      message: function (t) { toast(String(t)); },
+      clear_all: function () { guiReset(); $("gui").hidden = false; },
+      svg: function (t) {
+        var d = document.createElement("div"); d.className = "gsvg";
+        var doc = new DOMParser().parseFromString(String(t), "image/svg+xml"), n = doc.documentElement;
+        if (n && n.nodeName === "svg") { Array.prototype.forEach.call(n.querySelectorAll("script,foreignObject"), function (x) { x.remove(); }); var node = document.importNode(n, true); node.setAttribute("style", "max-width:100%;height:auto"); d.appendChild(node); }
+        return add(d);
+      }
+    };
+  }
+  function realGame() {
+    function cx() { if (!game.ctx) throw new Error("اول بازی.بوم(عرض, ارتفاع) را صدا بزنید"); return game.ctx; }
+    function fail(err) { gameHalt(); showPyError(err); }
+    function fire(kind, x, y) { var fn = game.handlers[kind]; if (!fn || stopped) return; try { fn(x, y); } catch (err) { fail(err); } }
+    return {
+      canvas: function (w, h) {
+        var c = document.createElement("canvas"); c.width = Math.max(50, w | 0); c.height = Math.max(50, h | 0);
+        c.style.cssText = "max-width:100%;touch-action:none;display:block;margin:0 auto;background:#fff";
+        var g = $("game"); g.textContent = ""; g.appendChild(c); g.hidden = false; game.canvas = c; game.ctx = c.getContext("2d");
+        function pos(e) { var r = c.getBoundingClientRect(); return [(e.clientX - r.left) * c.width / r.width, (e.clientY - r.top) * c.height / r.height]; }
+        c.addEventListener("pointerdown", function (e) { try { c.setPointerCapture(e.pointerId); } catch (x) {} var p = pos(e); fire("on_press", p[0], p[1]); });
+        c.addEventListener("pointermove", function (e) { var p = pos(e); fire("on_move", p[0], p[1]); });
+        var up = function (e) { var p = pos(e); fire("on_release", p[0], p[1]); };
+        c.addEventListener("pointerup", up); c.addEventListener("pointercancel", up);
+      },
+      clear: function (color) { var c = cx(), cv = game.canvas; c.clearRect(0, 0, cv.width, cv.height); if (color) { c.fillStyle = color; c.fillRect(0, 0, cv.width, cv.height); } },
+      rect: function (x, y, w, h, color) { var c = cx(); c.fillStyle = color || "#000"; c.fillRect(x, y, w, h); },
+      circle: function (x, y, r, color) { var c = cx(); c.beginPath(); c.arc(x, y, Math.max(0, r), 0, 6.2832); c.fillStyle = color || "#000"; c.fill(); },
+      line: function (x1, y1, x2, y2, color, width) { var c = cx(); c.beginPath(); c.moveTo(x1, y1); c.lineTo(x2, y2); c.strokeStyle = color || "#000"; c.lineWidth = width || 2; c.lineCap = "round"; c.stroke(); },
+      text: function (x, y, t, color, size) { var c = cx(); c.fillStyle = color || "#000"; c.font = (size || 16) + "px Vazirmatn, Tahoma, sans-serif"; c.textBaseline = "top"; c.fillText(String(t), x, y); },
+      on_press: function (fn) { game.handlers.on_press = fn; },
+      on_move: function (fn) { game.handlers.on_move = fn; },
+      on_release: function (fn) { game.handlers.on_release = fn; },
+      every_frame: function (fn) {
+        var sq = game.seq, last = performance.now();
+        (function tick(now) {
+          if (sq !== game.seq) return;
+          if (!game.busy) { game.busy = true; var dt = (now - last) / 1000; last = now; try { fn(dt); } catch (err) { fail(err); } game.busy = false; }
+          game.raf = requestAnimationFrame(tick);
+        })(last);
+      },
+      stop_game: function () { gameHalt(); }
+    };
+  }
+  function runReal(src, t, my, finish, t0) {
+    var py = REAL;
+    try { py.FS.mkdirTree("/home/pyodide"); } catch (e) {}
+    Object.keys(files).forEach(function (n) { if (/^\w+\.py$/.test(n) && /^[\x00-\x7F]+$/.test(n)) { try { py.FS.writeFile("/home/pyodide/" + n, translate(files[n], settings.persian)); } catch (e) {} } });
+    py.setStdout({ batched: function (x) { if (my === runSeq && !stopped) write(decodeNames(x) + "\n"); } });
+    py.setStderr({ batched: function (x) { if (my === runSeq && !stopped) write(decodeNames(x) + "\n", "err"); } });
+    var imps = importsOf(src).filter(function (m) { return !has(files, m + ".py"); });
+    return py.loadPackagesFromImports(src).catch(function () {})
+      .then(function () { return py.runPythonAsync(NEED_PY.replace("__NAMES__", JSON.stringify(imps)), { globals: py.toPy({}) }); }).catch(function () {})
+      .then(function () { if (/matplotlib|pylab/.test(src)) return py.runPythonAsync(MPL_PY, { globals: py.toPy({}) }); })
+      .then(function () { return py.runPythonAsync(src, { globals: py.toPy({ __name__: "__main__" }) }); })
+      .then(function () {
+        finish(stopped ? "برنامه متوقف شد." : "پایان برنامه — " + faNum(((performance.now() - t0) / 1000).toFixed(2)) + " ثانیه");
+      }, function (err) {
+        if (my !== runSeq) return;
+        showPyError(err); finish("پایان با خطا");
+      });
+  }
+
+  /* ======================= کتابخانه‌ی بازی (pfgame) ======================= */
+  var game = { seq: 0, raf: 0, ctx: null, canvas: null, busy: false, handlers: {} };
+  function gameHalt() { game.seq++; if (game.raf) cancelAnimationFrame(game.raf); game.raf = 0; game.busy = false; }
+  function gameReset() { gameHalt(); game.handlers = {}; var g = $("game"); g.textContent = ""; g.hidden = true; game.ctx = null; game.canvas = null; }
+  window.__pfGameModule = function (name) {
+    var mod = {}, P = Sk.ffi.remapToPy, J = Sk.ffi.remapToJs, F = Sk.builtin.func, NONE = Sk.builtin.none.none$;
+    function cx() { if (!game.ctx) throw new Sk.builtin.RuntimeError("اول بازی.بوم(عرض, ارتفاع) را صدا بزنید"); return game.ctx; }
+    function fail(err) { gameHalt(); showError(err); }
+    function fire(kind, x, y) {
+      var fn = game.handlers[kind]; if (!fn || stopped) return;
+      try { Sk.misceval.callsimAsync(null, fn, P(x), P(y)).then(function () {}, fail); } catch (err) { fail(err); }
+    }
+    mod.canvas = new F(function (w, h) {
+      var c = document.createElement("canvas"); c.width = Math.max(50, J(w) | 0); c.height = Math.max(50, J(h) | 0);
+      c.style.cssText = "max-width:100%;touch-action:none;display:block;margin:0 auto;background:#fff";
+      var g = $("game"); g.textContent = ""; g.appendChild(c); g.hidden = false; game.canvas = c; game.ctx = c.getContext("2d");
+      function pos(e) { var r = c.getBoundingClientRect(); return [(e.clientX - r.left) * c.width / r.width, (e.clientY - r.top) * c.height / r.height]; }
+      c.addEventListener("pointerdown", function (e) { try { c.setPointerCapture(e.pointerId); } catch (x) {} var p = pos(e); fire("on_press", p[0], p[1]); });
+      c.addEventListener("pointermove", function (e) { var p = pos(e); fire("on_move", p[0], p[1]); });
+      var up = function (e) { var p = pos(e); fire("on_release", p[0], p[1]); };
+      c.addEventListener("pointerup", up); c.addEventListener("pointercancel", up);
+      return NONE;
+    });
+    mod.clear = new F(function (color) { var c = cx(), cv = game.canvas; c.clearRect(0, 0, cv.width, cv.height); if (color) { c.fillStyle = J(color); c.fillRect(0, 0, cv.width, cv.height); } return NONE; });
+    mod.rect = new F(function (x, y, w, h, color) { var c = cx(); c.fillStyle = color ? J(color) : "#000"; c.fillRect(J(x), J(y), J(w), J(h)); return NONE; });
+    mod.circle = new F(function (x, y, r, color) { var c = cx(); c.beginPath(); c.arc(J(x), J(y), Math.max(0, J(r)), 0, 6.2832); c.fillStyle = color ? J(color) : "#000"; c.fill(); return NONE; });
+    mod.line = new F(function (x1, y1, x2, y2, color, width) { var c = cx(); c.beginPath(); c.moveTo(J(x1), J(y1)); c.lineTo(J(x2), J(y2)); c.strokeStyle = color ? J(color) : "#000"; c.lineWidth = width ? J(width) : 2; c.lineCap = "round"; c.stroke(); return NONE; });
+    mod.text = new F(function (x, y, t, color, size) { var c = cx(); c.fillStyle = color ? J(color) : "#000"; c.font = (size ? J(size) : 16) + "px Vazirmatn, Tahoma, sans-serif"; c.textBaseline = "top"; try { c.direction = "inherit"; } catch (e) {} c.fillText(String(J(t)), J(x), J(y)); return NONE; });
+    ["on_press", "on_move", "on_release"].forEach(function (k) { mod[k] = new F(function (fn) { game.handlers[k] = fn; return NONE; }); });
+    mod.every_frame = new F(function (fn) {
+      var s = game.seq, last = performance.now();
+      (function tick(now) {
+        if (s !== game.seq) return;
+        if (!game.busy) {
+          game.busy = true; var dt = (now - last) / 1000; last = now;
+          try { Sk.misceval.callsimAsync(null, fn, P(dt)).then(function () { game.busy = false; }, function (err) { game.busy = false; fail(err); }); } catch (err) { game.busy = false; fail(err); }
+        }
+        game.raf = requestAnimationFrame(tick);
+      })(last);
+      return NONE;
+    });
+    mod.stop_game = new F(function () { gameHalt(); return NONE; });
+    return mod;
+  };
+
+  /* ======================= کتابخانه‌ی رابط گرافیکی (pfgui) ======================= */
+  var gui = { cur: null, items: [] };
+  function guiReset() { gameReset(); var g = $("gui"); g.textContent = ""; g.hidden = true; gui.cur = null; gui.items = []; var f = $("gfx"); f.textContent = ""; f.hidden = true; }
+  window.__pfGuiModule = function (name) {
+    var mod = {}, P = Sk.ffi.remapToPy, J = Sk.ffi.remapToJs, F = Sk.builtin.func, NONE = Sk.builtin.none.none$;
+    function row() { var r = document.createElement("div"); r.className = "grow"; $("gui").hidden = false; $("gui").appendChild(r); gui.cur = r; return r; }
+    function add(el) { if (!gui.cur || !gui.cur.isConnected) row(); gui.cur.appendChild(el); gui.items.push(el); return P(gui.items.length - 1); }
+    function item(id) { var el = gui.items[J(id)]; if (!el) throw new Sk.builtin.ValueError("چنین ابزاری وجود ندارد"); return el; }
+    function field(el) { return el.querySelector("input,textarea") || el; }
+    mod.window = new F(function (t) { $("gui").hidden = false; $("outTitle").textContent = J(t); return NONE; });
+    mod.label = new F(function (t) { var e = document.createElement("span"); e.className = "gl"; e.textContent = J(t); return add(e); });
+    mod.button = new F(function (t, cb) {
+      var e = document.createElement("button"); e.type = "button"; e.className = "btn primary"; e.textContent = J(t);
+      e.addEventListener("click", function () {
+        if (stopped) return;
+        try { Sk.misceval.callsimAsync(null, cb).then(function () {}, function (err) { showError(err); }); } catch (err) { showError(err); }
+      });
+      return add(e);
+    });
+    mod.entry = new F(function (ph) { var e = document.createElement("input"); e.type = "text"; e.placeholder = ph ? J(ph) : ""; e.dir = "auto"; return add(e); });
+    mod.textarea = new F(function (ph) { var e = document.createElement("textarea"); e.placeholder = ph ? J(ph) : ""; e.dir = "auto"; return add(e); });
+    mod.checkbox = new F(function (t) { var l = document.createElement("label"), c = document.createElement("input"); c.type = "checkbox"; l.appendChild(c); l.appendChild(document.createTextNode(J(t))); return add(l); });
+    mod.svg = new F(function (t) {
+      var d = document.createElement("div"); d.className = "gsvg";
+      var doc = new DOMParser().parseFromString(String(J(t)), "image/svg+xml"), n = doc.documentElement;
+      if (n && n.nodeName === "svg") {
+        Array.prototype.forEach.call(n.querySelectorAll("script,foreignObject"), function (x) { x.remove(); });
+        var node = document.importNode(n, true); node.setAttribute("style", "max-width:100%;height:auto"); d.appendChild(node);
+      }
+      return add(d);
+    });
+    mod.row = new F(function () { row(); return NONE; });
+    mod.get = new F(function (id) { var f = field(item(id)); return f.type === "checkbox" ? P(!!f.checked) : P(f.value !== undefined && f.tagName !== "SPAN" ? f.value : f.textContent); });
+    mod.set = new F(function (id, v) { var f = field(item(id)); var x = J(v); if (f.type === "checkbox") f.checked = !!x; else if (f.tagName === "INPUT" || f.tagName === "TEXTAREA") f.value = String(x); else f.textContent = String(x); return NONE; });
+    mod.message = new F(function (t) { toast(String(J(t))); return NONE; });
+    mod.clear_all = new F(function () { guiReset(); $("gui").hidden = false; return NONE; });
+    return mod;
+  };
+
+  /* ======================= خطاهای فارسی ======================= */
+  var ERR_FA = {
+    NameError: "نام یا متغیری استفاده شده که تعریف نشده", SyntaxError: "نوشتار کد اشتباه است", IndentationError: "تورفتگی خط‌ها درست نیست",
+    TypeError: "نوع داده‌ها با هم جور نیست", ValueError: "مقدار مناسب نیست", ZeroDivisionError: "تقسیم بر صفر",
+    IndexError: "شماره‌ی خانه از فهرست بیرون است", KeyError: "کلید پیدا نشد", AttributeError: "ویژگی یا تابع وجود ندارد",
+    ImportError: "کتابخانه پیدا نشد", ModuleNotFoundError: "کتابخانه پیدا نشد", RecursionError: "تابع بی‌پایان خودش را صدا می‌زند",
+    NotImplementedError: "این قابلیت در این موتور پایتون نیست", OverflowError: "عدد از حد مجاز بزرگ‌تر است", AssertionError: "ادعای برنامه برقرار نبود",
+    ExternalError: "خطای داخلی موتور", TimeLimitError: "برنامه بیش از حد طول کشید"
+  };
+  function faError(raw) {
+    var m = /^\s*([A-Za-z]+)\s*:?\s*([\s\S]*)$/.exec(raw) || [];
+    var type = m[1] || "Error", msg = (m[2] || "").replace(/\s+on line \d+.*$/, "").trim();
+    if (type === "ParseError") type = "SyntaxError";
+    var title = ERR_FA[type] || "خطا در اجرای برنامه", detail = "", x;
+    if (type === "NameError" && (x = /name '(.+?)' is not defined/.exec(msg))) detail = "«" + x[1] + "» هنوز ساخته نشده یا املایش غلط است. اول به آن مقدار بدهید.";
+    else if (type === "ZeroDivisionError") detail = "تقسیم یا باقی‌مانده بر صفر ممکن نیست.";
+    else if (type === "ValueError" && (x = /invalid literal for int\(\) with base 10: '?(.*?)'?$/.exec(msg))) detail = "«" + x[1] + "» عدد صحیح نیست و تبدیل نمی‌شود.";
+    else if (type === "ValueError" && /float/.test(msg)) detail = "این متن عدد اعشاری نیست و تبدیل نمی‌شود.";
+    else if (type === "TypeError" && /unsupported operand/.test(msg)) detail = "این دو مقدار را نمی‌شود با این عملگر ترکیب کرد (مثلاً جمع کردن عدد با متن). یکی را با «متن()» یا «عدد_صحیح()» تبدیل کنید.";
+    else if (type === "TypeError" && /not callable/.test(msg)) detail = "چیزی که مثل تابع صدا زده شده، تابع نیست. نام متغیر را با نام تابع یکی نکرده باشید.";
+    else if (type === "TypeError" && /argument/.test(msg)) detail = "تعداد یا نوع ورودی‌های تابع درست نیست.";
+    else if (type === "IndexError") detail = "شماره‌ی خانه از تعداد عضوهای فهرست یا متن بیشتر است. شمارش از ۰ شروع می‌شود.";
+    else if (type === "KeyError") detail = "این کلید در دیکشنری نیست: " + msg;
+    else if (type === "AttributeError" && (x = /module '(.+?)' has no attribute '(.+?)'/.exec(msg))) detail = "«" + x[2] + "» در کتابخانه‌ی «" + x[1] + "» نیست. اگر این کتابخانه «فقط نام» یا «ساده‌شده» است، این بخشش در نسخه‌ی مرورگری پیاده نشده.";
+    else if (type === "ImportError" && (x = /cannot import name '?(.+?)'?$/.exec(msg))) detail = "«" + x[1] + "» در آن کتابخانه نیست (نسخه‌ی مرورگری ساده‌شده است).";
+    else if (type === "AttributeError" && (x = /'(.+?)' object has no attribute '(.+?)'/.exec(msg))) detail = "شیء از نوع «" + x[1] + "» ویژگی یا تابعی به نام «" + x[2] + "» ندارد.";
+    else if ((type === "ImportError" || type === "ModuleNotFoundError") && (x = /No module named ['"]?([\w.]+)/.exec(msg))) detail = "کتابخانه‌ی «" + x[1] + "» در این موتور پایتون نیست. فهرست کتابخانه‌ها در تنظیمات هست.";
+    else if (type === "SyntaxError") detail = "پرانتز، دو نقطه (:)، نقل‌قول و تورفتگی آن خط و خط قبلش را بررسی کنید.";
+    else if (type === "IndentationError") detail = "هر بلوک بعد از «:» باید ۴ فاصله تورفتگی داشته باشد و همه‌ی خط‌های یک بلوک یکسان باشند.";
+    else if (type === "TimeLimitError" || type === "RecursionError") detail = "حلقه یا تابع تمام نمی‌شود. شرط پایان را بررسی کنید.";
+    return { title: title, detail: detail, raw: type + (msg ? ": " + msg : "") };
+  }
+
+  /* ======================= اجرا و خروجی ======================= */
+  var outBody = $("outBody"), curLine = null, runSeq = 0, running = false, stopped = false, pendingInput = null;
+  function newLine() { curLine = document.createElement("div"); curLine.className = "ln"; outBody.appendChild(curLine); }
+  function write(text, cls) {
+    if (!curLine) newLine();
+    String(text).split("\n").forEach(function (p, idx) {
+      if (idx > 0) newLine();
+      if (p) { var sp = document.createElement("span"); if (cls) sp.className = cls; sp.textContent = p; curLine.appendChild(sp); }
+    });
+    outBody.scrollTop = outBody.scrollHeight;
+  }
+  function setRunning(on) { running = on; $("outStop").hidden = !on; if (!on) { $("inForm").hidden = true; pendingInput = null; } }
+  function askInput(prompt) {
+    return new Promise(function (res) {
+      if (prompt) write(decodeNames(prompt));
+      $("inForm").hidden = false; $("inField").value = ""; $("inField").focus();
+      pendingInput = res;
+    });
+  }
+  $("inForm").addEventListener("submit", function (e) {
+    e.preventDefault(); if (!pendingInput) return;
+    var v = $("inField").value, r = pendingInput; pendingInput = null;
+    $("inField").value = ""; $("inForm").hidden = true;
+    write(v + "\n", "echo"); r(v);
+  });
+  function stopRun() {
+    if (!running) return;
+    stopped = true; gameHalt();
+    try { Sk.execLimit = 1; } catch (e) {}
+    if (pendingInput) { var r = pendingInput; pendingInput = null; $("inForm").hidden = true; r(""); }
+  }
+  function closeOutput() { stopRun(); gameHalt(); $("outSheet").hidden = true; }
+  $("outStop").addEventListener("click", stopRun);
+  $("outClose").addEventListener("click", closeOutput);
+
+  function gotoLine(n) {
+    badLine = n; closeOutput(); render();
+    var lines = ta.value.split("\n"), pos = 0;
+    for (var i = 0; i < n - 1 && i < lines.length; i++) pos += lines[i].length + 1;
+    ta.focus(); ta.setSelectionRange(pos, pos);
+    var el = hl.children[n - 1];
+    if (el) { var sb = scroller.getBoundingClientRect(), eb = el.getBoundingClientRect(); scroller.scrollTop += eb.top - sb.top - sb.height / 3; }
+  }
+  function showError(err, myName) {
+    var raw = decodeNames(err && err.toString ? err.toString() : String(err));
+    var info = faError(raw), ln = 0;
+    try {
+      var tb = err && err.traceback;
+      if (tb && tb.length) for (var i = tb.length - 1; i >= 0; i--) { if (/<stdin>/.test(tb[i].filename || "")) { ln = tb[i].lineno | 0; break; } }
+      if (!ln && !(tb && tb.length)) { var q = /on line (\d+)/.exec(raw); if (q) ln = +q[1]; }
+    } catch (e) {}
+    var box = document.createElement("div"); box.className = "errbox"; box.setAttribute("role", "alert");
+    var h = document.createElement("strong"); h.textContent = info.title + (ln ? " (خط " + faNum(ln) + ")" : ""); box.appendChild(h);
+    if (info.detail) { var p = document.createElement("p"); p.textContent = info.detail; box.appendChild(p); }
+    var sm = document.createElement("small"); sm.textContent = info.raw; box.appendChild(sm);
+    if (ln) { var b = document.createElement("button"); b.className = "btn"; b.textContent = "رفتن به خط " + faNum(ln); b.addEventListener("click", function () { gotoLine(ln); }); box.appendChild(b); }
+    curLine = null; outBody.appendChild(box); outBody.scrollTop = outBody.scrollHeight;
+  }
+
+  function importsOf(src) {
+    var out = [];
+    src.split("\n").forEach(function (line) {
+      var im = /^\s*import\s+([^#]+)/.exec(line);
+      if (im) im[1].split(",").forEach(function (part) { var b = part.trim().split(/\s+/)[0].split(".")[0]; if (b) out.push(b); });
+      var fm = /^\s*from\s+([A-Za-z_][\w.]*)\s+import/.exec(line);
+      if (fm) out.push(fm[1].split(".")[0]);
+    });
+    return out.filter(function (x, i) { return out.indexOf(x) === i; });
+  }
+  function showMissing(missing) {
+    var box = document.createElement("div"); box.className = "errbox"; box.setAttribute("role", "alert");
+    var h1 = document.createElement("strong"); h1.textContent = "کتابخانه‌ی نصب‌نشده"; box.appendChild(h1);
+    var p = document.createElement("p"); p.textContent = "این برنامه از کتابخانه‌های زیر استفاده می‌کند ولی در پروژه‌ی «" + curProject + "» نصب نیستند: " + missing.map(function (m) { var f = faOf(m); return m + (f !== "—" ? " (" + f + ")" : ""); }).join("، ") + ".";
+    box.appendChild(p);
+    var b1 = document.createElement("button"); b1.className = "btn primary"; b1.textContent = "نصب و اجرا";
+    b1.addEventListener("click", function () { missing.forEach(function (m) { setInstalled(m, true); }); fillLibs(); run(); });
+    var b2 = document.createElement("button"); b2.className = "btn"; b2.style.marginRight = "8px"; b2.textContent = "رفتن به کتابخانه‌ها";
+    b2.addEventListener("click", function () { closeOutput(); openSettings("libs"); });
+    box.appendChild(b1); box.appendChild(b2);
+    curLine = null; outBody.appendChild(box);
+  }
+
+  function run() {
+    var t = tabs[active]; if (!t) return;
+    persist(); closeSheets(); hideMore(); ta.blur();
+    var my = ++runSeq; stopped = false; badLine = 0; render();
+    outBody.textContent = ""; curLine = null;
+    $("outTitle").textContent = "خروجی — " + t.name; $("outState").textContent = "";
+    openSheet($("outSheet")); setRunning(true);
+    var src = translate(files[t.name] || "", settings.persian), t0 = performance.now();
+    guiReset();
+    function finish(msg) { if (my !== runSeq) return; setRunning(false); write("\n" + msg + "\n", "info"); $("outState").textContent = msg; }
+    if (!window.Sk && !REAL) write("در حال بارگذاری موتور پایتون… (بار اول چند ثانیه طول می‌کشد)\n", "info");
+    loadEngine().then(function () {
+      if (my !== runSeq) return;
+      outBody.textContent = ""; curLine = null;
+      var have = moduleSet(), missing = importsOf(src).filter(function (m) { return have.has(m) && !isInstalled(m) && !has(files, m + ".py"); });
+      if (missing.length) { showMissing(missing); setRunning(false); $("outState").textContent = "اجرا نشد"; return; }
+      if (REAL) return runReal(src, t, my, finish, t0);
+      injectShims();
+      try { Sk.builtinFiles.files["src/lib/pfgui.js"] = "var $builtinmodule = function (name) { return window.__pfGuiModule(name); };"; Sk.builtinFiles.files["src/lib/pfgame.js"] = "var $builtinmodule = function (name) { return window.__pfGameModule(name); };"; } catch (e) {}
+      if (/turtle/.test(src)) { $("gfx").hidden = false; Sk.TurtleGraphics = { target: "gfx", width: Math.min(560, Math.max(260, outBody.clientWidth - 8)), height: 300 }; }
+      Sk.configure({
+        output: function (s) { if (my === runSeq && !stopped) write(decodeNames(s)); },
+        read: builtinRead,
+        inputfun: askInput, inputfunTakesPrompt: true,
+        __future__: Sk.python3, execLimit: Number.POSITIVE_INFINITY, yieldLimit: 100,
+        killableWhile: true, killableFor: true
+      });
+      return Sk.misceval.asyncToPromise(function () { return Sk.importMainWithBody("<stdin>", false, src, true); })
+        .then(function () {
+          finish(stopped ? "برنامه متوقف شد." : "پایان برنامه — " + faNum(((performance.now() - t0) / 1000).toFixed(2)) + " ثانیه");
+        }, function (err) {
+          if (my !== runSeq) return;
+          if (stopped) { finish("برنامه متوقف شد."); return; }
+          showError(err, t.name);
+          var ln = 0; try { var tb = err.traceback; for (var i = tb.length - 1; i >= 0; i--) if (/<stdin>/.test(tb[i].filename || "")) { ln = tb[i].lineno | 0; break; } } catch (e) {}
+          if (ln) { badLine = ln; render(); }
+          finish("پایان با خطا");
+        });
+    }, function () {
+      if (my !== runSeq) return;
+      write("موتور پایتون بارگذاری نشد. اینترنت را بررسی کنید و دوباره دکمه‌ی زرد را بزنید.\n", "err");
+      setRunning(false);
+    });
+  }
+
+  /* ======================= تنظیمات و فایل‌ها ======================= */
+  function openSettings(panel) { showPane(panel || "general"); renderFiles(); renderLessons(); fillLibs(); hideMore(); openSheet($("setSheet")); }
+  function showPane(p) {
+    [["general", "paneGeneral"], ["files", "paneFiles"], ["guide", "paneGuide"], ["tutorial", "paneTutorial"], ["libs", "paneLibs"]].forEach(function (x) { $(x[1]).hidden = x[0] !== p; });
+    Array.prototype.forEach.call($("setTabs").children, function (b) { b.classList.toggle("on", b.getAttribute("data-p") === p); });
+    if (p === "libs") loadEngine().catch(function () {});
+    if (p === "guide") buildGuide();
+  }
+  $("setTabs").addEventListener("click", function (e) { var p = e.target.getAttribute && e.target.getAttribute("data-p"); if (p) showPane(p); });
+  $("setClose").addEventListener("click", closeSheets);
+  $("fsRange").addEventListener("input", function () { settings.fontSize = +this.value; applySettings(); persistSoon(); });
+  $("dirSel").addEventListener("change", function () { settings.dir = this.value; applySettings(); persistSoon(); });
+  $("numsSel").addEventListener("change", function () { settings.nums = this.value; applySettings(); persistSoon(); });
+  $("persianChk").addEventListener("change", function () { settings.persian = this.checked; persistSoon(); });
+  var resetArmed = false;
+  $("resetBtn").addEventListener("click", function () {
+    var b = this;
+    if (!resetArmed) { resetArmed = true; b.textContent = "مطمئنید؟ دوباره بزنید تا همه‌چیز پاک شود"; setTimeout(function () { resetArmed = false; b.textContent = "پاک‌کردن همه‌چیز و شروع از اول"; }, 4000); return; }
+    store.clear(); location.reload();
+  });
+  function renderFiles() {
+    var box = $("fileList"); box.textContent = "";
+    Object.keys(files).sort().forEach(function (name) {
+      var row = document.createElement("div"); row.className = "item";
+      var t = document.createElement("span"); t.className = "t mono"; t.textContent = name;
+      var open = document.createElement("button"); open.className = "btn"; open.textContent = "باز کردن";
+      open.addEventListener("click", function () { openFile(name); });
+      var del = document.createElement("button"); del.className = "btn danger"; del.textContent = "حذف";
+      del.addEventListener("click", function () {
+        if (del.getAttribute("data-arm") !== "1") { del.setAttribute("data-arm", "1"); del.textContent = "مطمئنید؟"; return; }
+        delete files[name];
+        for (var i = tabs.length - 1; i >= 0; i--) if (tabs[i].name === name) { tabs.splice(i, 1); if (i < active) active--; }
+        if (!tabs.length) { var nm = uniqueName("program.py"); files[nm] = ""; tabs.push({ name: nm }); active = 0; }
+        active = Math.max(0, Math.min(active, tabs.length - 1));
+        persist(); renderTabs(); showTab(); renderFiles();
+      });
+      row.appendChild(t); row.appendChild(open); row.appendChild(del); box.appendChild(row);
+    });
+  }
+  function renderLessons() {
+    var box = $("lessonList"); box.textContent = "";
+    LESSONS.forEach(function (l) {
+      var row = document.createElement("div"); row.className = "item";
+      var t = document.createElement("span"); t.className = "t"; t.textContent = l.t;
+      var open = document.createElement("button"); open.className = "btn primary"; open.textContent = "باز کردن";
+      open.addEventListener("click", function () { if (!has(files, l.f)) files[l.f] = l.c; persist(); openFile(l.f); });
+      row.appendChild(t); row.appendChild(open); box.appendChild(row);
+    });
+  }
+  var libFilter = "all";
+  var SPECIAL = [["pfgui", "رابط"], ["pfgame", "بازی"]];
+  var THIRD = [["kivy", "کیوی"], ["numpy", "نامپای"], ["pandas", "پاندا"], ["requests", "ریکوئست"], ["flask", "فلسک"], ["django", "جنگو"], ["fastapi", "فست_ای_پی_آی"], ["uvicorn", "یووی_کورن"], ["jinja2", "جینجا"], ["pygame", "پایگیم"], ["matplotlib", "ماتپلات_لیب"], ["PIL", "پیلو"], ["scipy", "سای_پای"], ["sklearn", "یادگیری_ماشین"], ["bs4", "زیبا_سوپ"], ["selenium", "سلنیوم"], ["sqlalchemy", "اس_کیو_ال_آلکمی"], ["cv2", "اوپن_سی_وی"], ["yt_dlp", "یوتیوب_دی_ال"], ["PyQt5", "پای_کیو_تی"], ["torch", "تورچ"], ["tensorflow", "تنسورفلو"], ["openpyxl", "اکسل"], ["redis", "ردیس"], ["pytest", "پای_تست"], ["rich", "ریچ"], ["click", "کلیک"], ["arabic_reshaper", "اصلاح_حروف"], ["bidi", "جهت_متن"], ["telebot", "تلگرام_بات"], ["aiohttp", "ای_او_اچ_تی_تی_پی"], ["websockets", "وب_سوکت"], ["moviepy", "فیلم_پای"]];
+  function moduleSet() {
+    if (REAL) {
+      var rs = new Set();
+      CATALOG.forEach(function (e) { if (REAL_NO.indexOf(e[0]) < 0) rs.add(e[0]); });
+      THIRD.forEach(function (x) { if (REAL_NO.indexOf(x[0]) < 0) rs.add(x[0]); });
+      SPECIAL.forEach(function (x) { rs.add(x[0]); });
+      return rs;
+    }
+    if (!window.Sk || !Sk.builtinFiles) return null;
+    var s = new Set();
+    Object.keys(Sk.builtinFiles.files).forEach(function (k) {
+      var m = /^src\/lib\/([^\/]+?)(?:\.(?:py|js)|\/__init__\.py)$/.exec(k);
+      if (m && m[1].charAt(0) !== "_") s.add(m[1]);
+    });
+    SPECIAL.forEach(function (x) { s.add(x[0]); });
+    return s;
+  }
+  function isInstalled(en) { return PRE.indexOf(en) >= 0 || projects[curProject].libs.indexOf(en) >= 0; }
+  function setInstalled(en, on) {
+    var l = projects[curProject].libs, i = l.indexOf(en);
+    if (on && i < 0) l.push(en); if (!on && i >= 0) l.splice(i, 1);
+    persist();
+  }
+  var WHY_GUI = ["kivy", "PyQt5", "pygame"], WHY_C = ["numpy", "pandas", "scipy", "sklearn", "torch", "tensorflow", "cv2", "PIL", "matplotlib", "moviepy"],
+    WHY_NET = ["requests", "flask", "django", "fastapi", "uvicorn", "aiohttp", "websockets", "selenium", "redis", "telebot", "sqlalchemy", "yt_dlp", "bs4"];
+  function whyNot(r) {
+    if (REAL) return "چرا نیست: در پایتونِ مرورگر اجرا نمی‌شود: پنجره‌ی واقعی، کارت گرافیک، فرایند جانبی یا سرور می‌خواهد.";
+    if (WHY_GUI.indexOf(r.en) >= 0) return "چرا نیست: پنجره‌ی واقعی سیستم‌عامل یا کارت گرافیک می‌خواهد و داخل صفحه‌ی مرورگر باز نمی‌شود. به‌جایش از «رابط» (پنجره و دکمه) یا «بازی» (بوم و بازی) یا tkinter ساده‌شده استفاده کنید.";
+    if (WHY_C.indexOf(r.en) >= 0) return "چرا نیست: بخش اصلی‌اش به زبان C نوشته شده و موتور پایتونِ مرورگر فقط پایتونِ ساده را اجرا می‌کند. برای حساب‌های معمولی از «ریاضی» و «آمار» استفاده کنید.";
+    if (WHY_NET.indexOf(r.en) >= 0) return "چرا نیست: اینترنت واقعی، سرور یا پورت می‌خواهد و صفحه‌ی امنِ Claude اجازه‌ی اتصال نمی‌دهد.";
+    if (r.third) return "چرا نیست: این کتابخانه با pip نصب می‌شود و این موتور pip ندارد.";
+    return "چرا نیست: وابسته به خود سیستم‌عامل است (فایل‌های سطح پایین، فرایند، شبکه) و در موتور پایتونِ مرورگر ساخته نشده.";
+  }
+  function faOf(en) { for (var k in MOD_FA) if (has(MOD_FA, k) && MOD_FA[k] === en) return k; return "—"; }
+  function fillLibs() {
+    var have = moduleSet(), box = $("libMods"), info = $("libInfo"), q = $("libSearch").value.trim().toLowerCase();
+    var sel = $("projSel"); sel.textContent = "";
+    Object.keys(projects).forEach(function (k) { var o = document.createElement("option"); o.value = k; o.textContent = k; if (k === curProject) o.selected = true; sel.appendChild(o); });
+    box.textContent = "";
+    var rows = CATALOG.map(function (e) { return { en: e[0], fa: e[1], avail: have ? have.has(e[0]) : null }; });
+    var known = new Set(CATALOG.map(function (e) { return e[0]; }));
+    SPECIAL.forEach(function (x) { rows.push({ en: x[0], fa: x[1], avail: true, sp: true }); known.add(x[0]); });
+    THIRD.forEach(function (x) { rows.push({ en: x[0], fa: x[1], avail: have ? have.has(x[0]) : false, third: true }); known.add(x[0]); });
+    if (have) have.forEach(function (n) { if (!known.has(n)) rows.push({ en: n, fa: "—", avail: true }); });
+    rows.sort(function (x, y) { return x.en < y.en ? -1 : 1; });
+    var can = rows.filter(function (r) { return r.avail === true; }), nIns = can.filter(function (r) { return isInstalled(r.en); }).length;
+    info.textContent = have ? "در پروژه‌ی «" + curProject + "» نصب‌شده: " + faNum(nIns) + " از " + faNum(can.length) + " کتابخانه‌ی قابل‌نصب. در مرورگر نیست: " + faNum(rows.length - can.length) : "فهرست قابل‌نصب‌ها بعد از بارگذاری موتور پایتون مشخص می‌شود.";
+    rows.filter(function (r) {
+      if (libFilter === "yes" && !(r.avail && isInstalled(r.en))) return false;
+      if (libFilter === "no" && !(r.avail !== false && !isInstalled(r.en))) return false;
+      return !q || r.en.toLowerCase().indexOf(q) >= 0 || r.fa.indexOf(q) >= 0;
+    }).forEach(function (r) {
+      var row = document.createElement("div"); row.className = "lib";
+      var en = document.createElement("span"); en.className = "en"; en.textContent = r.en;
+      var fa = document.createElement("span"); fa.className = "fa"; fa.textContent = r.fa + (r.sp ? "  (ویژه‌ی این برنامه)" : "") + (STUB.indexOf(r.en) >= 0 ? "  (فقط نام؛ کار نمی‌کند)" : PRE.indexOf(r.en) >= 0 && r.avail ? "  (نسخه‌ی ساده‌شده، از اول نصب)" : "");
+      var act = document.createElement("span"); act.className = "act";
+      var bd = document.createElement("span"), ins = r.avail && isInstalled(r.en);
+      bd.className = "badge " + (r.avail === false ? "no" : r.avail === null ? "unk" : ins ? "yes" : "unk");
+      bd.textContent = r.avail === false ? "در مرورگر نیست" : r.avail === null ? "در انتظار" : ins ? "نصب‌شده" : "نصب‌نشده";
+      act.appendChild(bd);
+      if (r.avail === true && PRE.indexOf(r.en) < 0) {
+        var b = document.createElement("button"); b.type = "button"; b.className = "btn" + (ins ? " danger" : " primary"); b.textContent = ins ? "حذف" : "نصب";
+        b.addEventListener("click", function () { setInstalled(r.en, !ins); fillLibs(); });
+        act.appendChild(b);
+      }
+      row.appendChild(en); row.appendChild(fa); row.appendChild(act);
+      if (r.avail === false || STUB.indexOf(r.en) >= 0) { var wy = document.createElement("span"); wy.className = "why"; wy.textContent = r.avail === false ? whyNot(r) : whyNot(r).replace("چرا نیست:", "محدودیت (فقط import می‌شود، کارکردش نیست):"); row.appendChild(wy); }
+      box.appendChild(row);
+    });
+  }
+  $("libFilters").addEventListener("click", function (e) {
+    var f = e.target.getAttribute && e.target.getAttribute("data-f"); if (!f) return;
+    libFilter = f; Array.prototype.forEach.call($("libFilters").children, function (x) { x.classList.toggle("on", x === e.target); }); fillLibs();
+  });
+  $("projSel").addEventListener("change", function () { curProject = this.value; persist(); fillLibs(); });
+  $("projNew").addEventListener("click", function () { $("projForm").hidden = !$("projForm").hidden; if (!$("projForm").hidden) $("projName").focus(); });
+  function makeProject() {
+    var nm = $("projName").value.trim().replace(/\s+/g, " ");
+    if (!nm || has(projects, nm)) { toast(nm ? "این نام قبلاً هست" : "نام پروژه را بنویسید"); return; }
+    projects[nm] = { libs: [] }; curProject = nm; $("projName").value = ""; $("projForm").hidden = true; persist(); fillLibs();
+  }
+  $("projMake").addEventListener("click", makeProject);
+  $("projName").addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); makeProject(); } });
+  $("libSearch").addEventListener("input", fillLibs);
+
+
+  /* ======================= کتاب راهنما ======================= */
+  var GUIDE_CODE = {
+    hello: "# سلام دنیا\nنام = ورودی(\"اسم شما؟ \")\nچاپ(\"سلام\", نام)\n",
+    vars: "سن = 20\nقد = 1.75\nنام = \"علی\"\nفعال = درست\nمیوه‌ها = [\"سیب\", \"موز\"]\nچاپ(نوع(سن), نوع(قد), نوع(نام), نوع(فعال), نوع(میوه‌ها))\nسن = سن + 1\nچاپ(نام, \"الان\", سن, \"ساله است\")\n",
+    cond: "نمره = عدد_صحیح(ورودی(\"نمره؟ \"))\nاگر نمره >= 17:\n    چاپ(\"عالی\")\nوگر نمره >= 10:\n    چاپ(\"قبول\")\nوگرنه:\n    چاپ(\"مردود\")\n",
+    loop: "برای i در دامنه(1, 6):\n    چاپ(\"شماره\", i)\nn = 3\nمادام n > 0:\n    چاپ(\"شمارش معکوس\", n)\n    n = n - 1\nبرای x در [5, 8, 12, 20]:\n    اگر x == 8:\n        ادامه\n    اگر x > 15:\n        بشکن\n    چاپ(x)\n",
+    func: "تعریف جمع_دو(الف, ب=10):\n    برگردان الف + ب\nچاپ(جمع_دو(5))\nچاپ(جمع_دو(5, 7))\nمربع = لامبدا x: x * x\nچاپ(مربع(6))\nتعریف شمارنده(تا):\n    برای i در دامنه(تا):\n        تولید i\nچاپ(فهرست(شمارنده(4)))\n",
+    coll: "میوه‌ها = [\"سیب\", \"موز\"]\nمیوه‌ها.اضافه(\"گیلاس\")\nچاپ(طول(میوه‌ها), میوه‌ها[0], میوه‌ها[-1])\nنمرات = {\"علی\": 18, \"سارا\": 20}\nنمرات[\"رضا\"] = 15\nبرای نام, نمره در نمرات.جفت_ها():\n    چاپ(نام, نمره)\nمتن1 = \"  سلام دنیا  \"\nچاپ(متن1.حذف_فاصله().بزرگ())\n",
+    cls: "کلاس سگ:\n    تعریف ساز(خود, نام):\n        خود.نام = نام\n    تعریف پارس(خود):\n        چاپ(خود.نام, \"هاپ هاپ!\")\nکلاس توله(سگ):\n    تعریف پارس(خود):\n        چاپ(خود.نام, \"عو عو (کوچولو)\")\nس = سگ(\"رکس\")\nس.پارس()\nتوله(\"پیکسی\").پارس()\n",
+    err: "امتحان:\n    عدد = عدد_صحیح(ورودی(\"یک عدد: \"))\n    چاپ(10 / عدد)\nخطا خطای_تقسیم_بر_صفر:\n    چاپ(\"صفر نمی‌شود\")\nخطا خطای_مقدار:\n    چاپ(\"این عدد نیست\")\nسرانجام:\n    چاپ(\"تمام\")\n",
+    mods: "وارد ریاضی\nوارد تصادفی\nچاپ(ریاضی.ریشه_دوم(144), ریاضی.پی)\nچاپ(تصادفی.تصادفی_صحیح(1, 6))\nاز زمان وارد اکنون\n",
+    gui: "وارد رابط\nرابط.پنجره(\"شمارنده\")\nعدد = [0]\nبرچ = رابط.برچسب(\"0\")\nتعریف بیشتر():\n    عدد[0] += 1\n    رابط.قرار_بده(برچ, متن(عدد[0]))\nرابط.دکمه(\"یکی بیشتر\", بیشتر)\n",
+    tk: "import tkinter as tk\nroot = tk.Tk()\nroot.title(\"Counter\")\nn = [0]\nlab = tk.Label(root, text=\"0\")\nlab.pack()\ndef inc():\n    n[0] += 1\n    lab.config(text=str(n[0]))\ntk.Button(root, text=\"+1\", command=inc).pack()\nroot.mainloop()\n"
+  };
+  var GUIDE = [
+    ["۱. شروع سریع", ["برای نوشتن برنامه، در صفحه‌ی بزرگ بنویسید و دکمه‌ی زرد پایین را بزنید. خروجی در پنجره‌ی سفید می‌آید. هر خطی که با # شروع شود توضیح است و اجرا نمی‌شود. تورفتگی (چهار فاصله) بعد از «:» الزامی است.", "«چاپ» نمایش می‌دهد و «ورودی» از کاربر می‌پرسد."], "hello"],
+    ["۲. متغیرها و نوع‌ها", ["متغیر یک اسم است برای نگه‌داشتن مقدار؛ با علامت = ساخته می‌شود و نیاز به هیچ دستور خاصی ندارد. تعداد متغیرها محدود نیست و نام آن‌ها می‌تواند فارسی یا انگلیسی باشد (نیم‌فاصله هم مجاز است).", "نوع‌های اصلی: عدد_صحیح، عدد_اعشاری، متن، منطقی (درست/نادرست)، فهرست، چندتایی، دیکشنری، مجموعه. «نوع(x)» نوع هر مقدار را می‌گوید. عدد فارسی (۱۲۳) هم پذیرفته می‌شود."], "vars"],
+    ["۳. شرط (اگر)", ["برنامه با «اگر / وگر / وگرنه» تصمیم می‌گیرد. مقایسه‌ها: == != < > <= >= و ترکیب‌ها: «و»، «یا»، «نه». «است» برای هم‌هویتی و «در» برای عضویت."], "cond"],
+    ["۴. حلقه (تکرار)", ["حلقه یعنی تکرار یک کار. دو نوع دارید: «برای» (تعداد یا عضوهای مشخص) و «مادام» (تا وقتی شرط درست است). «بشکن» حلقه را کامل قطع می‌کند و «ادامه» می‌رود سراغ دور بعد. «دامنه(شروع, پایان, گام)» عددهای پشت‌سرهم می‌سازد و «شمارش» شماره‌گذاری می‌کند."], "loop"],
+    ["۵. تابع", ["تابع یک کار نام‌دار است که بارها صدایش می‌زنید. با «تعریف» ساخته می‌شود، ورودی (پارامتر) می‌گیرد و با «برگردان» جواب می‌دهد. پارامتر می‌تواند مقدار پیش‌فرض داشته باشد. «لامبدا» تابع یک‌خطی است و «تولید» تابع مولد می‌سازد. «سراسری» و «غیرمحلی» متغیرهای بیرون تابع را قابل تغییر می‌کنند."], "func"],
+    ["۶. فهرست، دیکشنری و متن", ["فهرست یک صف مرتب است [..]، دیکشنری جفت کلید و مقدار است {..}، مجموعه عضو تکراری ندارد، چندتایی تغییرناپذیر است (..). هر نوع «متد»هایی دارد که بعد از نقطه می‌آید؛ فهرست کامل متدها در بخش ۱۲ است."], "coll"],
+    ["۷. کلاس و شیء", ["کلاس قالب ساخت شیء است. «ساز» تابع ساختن شیء است (در پایتون __init__) و «خود» خود شیء است (self). کلاس می‌تواند از کلاس دیگر ارث ببرد: «کلاس توله(سگ)»."], "cls"],
+    ["۸. خطاها و استثناها", ["اگر برنامه‌ی شما خطا بدهد، متن خطا به فارسی با شماره‌ی خط و دکمه‌ی «رفتن به خط» نشان داده می‌شود. برای جلوگیری از توقف برنامه از «امتحان / خطا / سرانجام» استفاده کنید و با «بالابر» خودتان خطا بسازید. همه‌ی خطاهای استاندارد نام فارسی دارند (فهرست در بخش ۱۲)."], "err"],
+    ["۹. کتابخانه‌ها و فایل‌ها", ["با «وارد» کتابخانه می‌آورید. در این برنامه هیچ کتابخانه‌ای از قبل نصب نیست؛ در تنظیمات ← کتابخانه‌ها برای هر پروژه خودتان نصب می‌کنید و اگر نصب نباشد، موقع اجرا با یک دکمه نصبش می‌کنید. هر فایل .py خودتان هم کتابخانه است: «وارد نام_فایل».", "هر کتابخانه نام فارسی هم دارد (مثلاً ریاضی = math، تصادفی = random، زمان = time)."], "mods"],
+    ["حالت واقعی: پایتون کامل", ["همین فایل دو حالت دارد. داخل خود Claude (صفحه‌ی امن) فقط موتور ساده اجرا می‌شود. اگر همین فایل HTML را ذخیره کنید و بیرون از Claude در مرورگر گوشی (Chrome) باز کنید و اینترنت داشته باشید، خودش موتور واقعی را می‌گیرد. در بالای تب کتابخانه‌ها می‌بینید «موتور پایتون: واقعی».", "در حالت واقعی: همه‌ی کتابخانه‌های استاندارد واقعی‌اند؛ numpy، pandas، matplotlib، scipy، scikit-learn، pillow، sympy و ده‌ها بسته‌ی دیگر با نصب خودکار (pip) کار می‌کنند؛ نمودار matplotlib با show() داخل خروجی نشان داده می‌شود؛ input() یک کادر ورودی باز می‌کند. محدودیت‌ها: kivy، tkinter، pygame، torch، opencv و سرور واقعی نیست؛ دکمه‌ی توقف برنامه‌ی در حال اجرا کار نمی‌کند (حلقه‌ی بی‌پایان صفحه را قفل می‌کند و باید صفحه را دوباره باز کنید)."], null],
+    ["۱۰. برنامه‌ی پنجره‌ای", ["با کتابخانه‌ی «رابط» برچسب، دکمه، کادر ورودی و چک‌باکس می‌سازید. نسخه‌ی ساده‌شده‌ی tkinter و kivy هم از اول نصب است. فقط ابزارهای Tk، Label، Button، Entry، Text، Checkbutton، Frame، متغیرهای StringVar/IntVar و messagebox را دارد و after و canvas و منو ندارد."], "gui"],
+    ["۱۱. بازی", ["کتابخانه‌ی «بازی» بوم، شکل‌های ساده، رویداد لمس (هنگام_فشار، هنگام_حرکت، هنگام_رها_کردن) و تکرار هر فریم دارد. نمونه‌ی کامل: درس تیرکمان و تیر و کمان در بخش «آموزش»."], null]
+  ];
+  function guideChips(parent, obj) {
+    var box = document.createElement("div"); box.className = "chips";
+    Object.keys(obj).forEach(function (k) {
+      var c = document.createElement("span"); c.className = "chip"; c.textContent = k.replace(/_/g, " ");
+      var b = document.createElement("b"); b.textContent = obj[k]; c.appendChild(b); box.appendChild(c);
+    });
+    parent.appendChild(box);
+  }
+  function guideDetails(title, open) {
+    var d = document.createElement("details"); if (open) d.open = true;
+    var sm = document.createElement("summary"); sm.textContent = title; d.appendChild(sm);
+    var b = document.createElement("div"); b.className = "gb"; d.appendChild(b); $("guideBox").appendChild(d); return b;
+  }
+  function shimTops() { var o = {}; Object.keys(SHIM_FILES).forEach(function (k) { var m = /^src\/lib\/([^\/.]+)/.exec(k); if (m) o[m[1]] = 1; }); return Object.keys(o); }
+  var guideBuilt = false;
+  function buildGuide() {
+    if (guideBuilt) return; guideBuilt = true;
+    var root = $("guideBox"); root.textContent = "";
+    var nKW = Object.keys(KW).length, names = Object.keys(AL), nAL = names.length, nMET = Object.keys(MET).length;
+    var nExc = names.filter(function (k) { return /^(خطای|هشدار|استثنا|گروه_استثنا|پایان_تکرار|خروج_|وقفه)/.test(k); }).length;
+    var nThird = THIRD.length, nStd = CATALOG.length;
+    // خلاصه
+    var b = guideDetails("خلاصه: چه چیزهایی داخل این پایتون هست؟", true);
+    var p = document.createElement("p");
+    p.textContent = "بله. حلقه (برای، مادام، بشکن، ادامه)، تابع (تعریف، برگردان، لامبدا، تولید)، متغیر (با =، بدون محدودیت)، شرط، کلاس، خطا و کتابخانه همه هست و به فارسی نوشته می‌شود. شمارش دقیق:";
+    b.appendChild(p);
+    var cnt = document.createElement("div"); cnt.className = "cnt";
+    [["دستورهای اصلی (کلمه‌های کلیدی)", nKW], ["توابع آماده و انواع (چاپ، طول، دامنه ...)", nAL - nExc], ["خطاها و هشدارها با نام فارسی", nExc], ["متدها (بعد از نقطه: .اضافه ، .جدا_کن ...)", nMET], ["کتابخانه‌های استاندارد فهرست‌شده", nStd], ["کتابخانه‌های ساده‌شده‌ی کارا (از اول نصب)", shimTops().length], ["انواع حلقه", 2], ["دستورهای کنترل حلقه", 2], ["دستورهای ساخت تابع", 5], ["متغیر", "بی‌نهایت (با نام دلخواه)"]].forEach(function (x) {
+      var a = document.createElement("span"), c = document.createElement("span"); a.textContent = x[0]; c.textContent = typeof x[1] === "number" ? faNum(x[1]) : x[1]; cnt.appendChild(a); cnt.appendChild(c);
+    });
+    b.appendChild(cnt);
+    // فصل‌ها
+    GUIDE.forEach(function (ch) {
+      var body = guideDetails(ch[0], false);
+      ch[1].forEach(function (t) { var q = document.createElement("p"); q.textContent = t; body.appendChild(q); });
+      if (ch[2]) {
+        var code = GUIDE_CODE[ch[2]], pre = document.createElement("pre"); pre.textContent = code; body.appendChild(pre);
+        var go = document.createElement("button"); go.type = "button"; go.className = "btn primary"; go.textContent = "امتحان کن";
+        go.addEventListener("click", function () { var nm = "راهنما_" + ch[2] + ".py"; files[nm] = code; persist(); closeSheets(); openFile(nm); });
+        body.appendChild(go);
+        if (ch[2] === "gui") {
+          var pre2 = document.createElement("pre"); pre2.textContent = GUIDE_CODE.tk; body.appendChild(pre2);
+          var go2 = document.createElement("button"); go2.type = "button"; go2.className = "btn primary"; go2.textContent = "امتحان tkinter";
+          go2.addEventListener("click", function () { var nm = "راهنما_tkinter.py"; files[nm] = GUIDE_CODE.tk; persist(); closeSheets(); openFile(nm); });
+          body.appendChild(go2);
+        }
+      }
+    });
+    var r = guideDetails("۱۲. فهرست کامل دستورها (انگلیسی کنار هر کدام)", false);
+    var h1 = document.createElement("p"); h1.textContent = "دستورهای اصلی (" + faNum(nKW) + " تا):"; r.appendChild(h1); guideChips(r, KW);
+    var h2 = document.createElement("p"); h2.textContent = "توابع آماده، انواع و خطاها (" + faNum(nAL) + " تا):"; r.appendChild(h2); guideChips(r, AL);
+    var h3 = document.createElement("p"); h3.textContent = "متدها (" + faNum(nMET) + " تا):"; r.appendChild(h3); guideChips(r, MET);
+    var l = guideDetails("۱۳. کتابخانه‌ها: کامل، ساده‌شده، فقط‌نام", false);
+    ["همه‌ی کتابخانه‌های فهرست از اول نصب‌اند و سه نوع‌اند. ۱) کامل: خود موتور دارد (math، random، json، re ...). ۲) ساده‌شده: خودمان به پایتونِ خالص نوشته‌ایم و واقعاً کار می‌کند ولی کامل نیست: tkinter، kivy، numpy، pandas، matplotlib (فقط plot، scatter، bar، hist و show)، statistics، fractions، hashlib (فقط sha256)، base64، uuid، textwrap، queue، logging و چند تای دیگر. ۳) فقط نام: فقط import می‌شود تا برنامه‌ی شما نیفتد، ولی کارهای اصلی‌اش (اینترنت، فایل‌های سیستم، پردازش جانبی، pygame، torch، opencv، requests ...) در مرورگر ممکن نیست و خطای فارسی می‌دهد.", "این برنامه داخل یک صفحه‌ی امنِ مرورگر اجرا می‌شود، نه روی یک پایتون واقعی. موتورش پایتونِ ساده است. به همین خاطر: ۱) pip ندارد و هر چیزی که باید دانلود شود نصب نمی‌شود، ۲) کتابخانه‌هایی که بخش C دارند (numpy، pandas، torch، opencv ...) اجرا نمی‌شوند، ۳) kivy و PyQt و pygame پنجره‌ی واقعی سیستم‌عامل می‌خواهند، ۴) اینترنت و سرور (flask، requests ...) مجاز نیست.",
+     "راه‌حل‌ها: برای پنجره و دکمه «رابط» یا tkinter ساده‌شده؛ برای بازی «بازی»؛ برای حساب «ریاضی» و «آمار»؛ برای برنامه‌ی کاملِ واقعی روی گوشی یا رایانه باید پایتون واقعی نصب کنید.",
+     "محدودیت‌های دیگر: کلمه‌های ناهمگام/منتظر/تطبیق/مورد فارسی شده‌اند ولی موتور فعلی ممکن است اجرایشان نکند؛ فایل‌ها فقط در حافظه‌ی همین مرورگر می‌مانند."].forEach(function (t) { var q = document.createElement("p"); q.textContent = t; l.appendChild(q); });
+  }
+
+  /* ======================= منو و دکمه‌ها ======================= */
+  function hideMore() { $("more").hidden = true; $("bMore").setAttribute("aria-expanded", "false"); }
+  $("bMore").addEventListener("click", function (e) { e.stopPropagation(); var h = $("more").hidden; $("more").hidden = !h; this.setAttribute("aria-expanded", String(h)); });
+  document.addEventListener("click", function (e) { if (!e.target.closest("#more")) hideMore(); });
+  $("more").addEventListener("click", function (e) {
+    var a = e.target.getAttribute && e.target.getAttribute("data-a"); if (!a) return; hideMore();
+    if (a === "new") newFile();
+    else if (a === "settings") openSettings("general");
+    else if (a === "libs") openSettings("libs");
+    else if (a === "close") closeTab(active);
+    else if (a === "rename") { var tab = $("tabs").querySelector(".tab.on"); if (tab) startRename(tab, tabs[active]); }
+    else if (a === "copy") {
+      var text = ta.value;
+      var fb = function () { ta.focus(); ta.select(); var ok = false; try { ok = document.execCommand("copy"); } catch (x) {} ta.setSelectionRange(text.length, text.length); toast(ok ? "کد کپی شد" : "کد را انتخاب کنید و خودتان کپی کنید"); };
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(function () { toast("کد کپی شد"); }, fb); else fb();
+    }
+  });
+  $("bRun").addEventListener("click", run);
+  $("bMenu").addEventListener("click", function () { openSettings("general"); });
+  $("bFiles").addEventListener("click", function () { openSettings("files"); });
+  $("bLearn").addEventListener("click", function () { openSettings("guide"); });
+  window.addEventListener("beforeunload", persist);
+  document.addEventListener("visibilitychange", function () { if (document.hidden) persist(); });
+
+  applySettings(); renderTabs(); showTab(); renderLessons(); renderFiles();
+  loadEngine().catch(function () {});
+})();
+
+</script>
+
+</html>
